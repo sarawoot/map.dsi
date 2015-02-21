@@ -1,0 +1,49 @@
+en:
+  simple_form:
+    "yes": 'Yes'
+    "no": 'No'
+    required:
+      text: 'required'
+      mark: '*'
+      # You can uncomment the line below if you need to overwrite the whole required html.
+      # When using html, text and mark won't be used.
+      # html: '<abbr title="required">*</abbr>'
+    error_notification:
+      default_message: "Please review the problems below:"
+    # Examples
+    # labels:
+    #   defaults:
+    #     password: 'Password'
+    #   user:
+    #     new:
+    #       email: 'E-mail to sign in.'
+    #     edit:
+    #       email: 'E-mail.'
+    # hints:
+    #   defaults:
+    #     username: 'User name to sign in.'
+    #     password: 'No special characters, please.'
+    # include_blanks:
+    #   defaults:
+    #     age: 'Rather not say'
+    # prompts:
+    #   defaults:
+    #     age: 'Select your age'
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "กรุณากรอกข้อมูล อีเมล"
+              taken: "Please use a different Email id"
+              invalid: "Please Specify a valid Email id"
+            password:
+              blank: "กรุณากรอกข้อมูล รหัสผ่าน"
+              confirmation: "รหัสผ่านไม่ถูกต้อง"
+            password_confirmation:
+              blank: "กรุณากรอกข้อมูล ยืนยันรหัสผ่าน"
+            fname:
+              blank: "กรุณากรอกข้อมูล"
+            lname:
+              blank: "กรุณากรอกข้อมูล"

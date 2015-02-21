@@ -3,7 +3,7 @@ default: &default
   encoding: unicode
   pool: 5
   database: dsi
-  username: postgres
+  username: admin
   password: 123456
   host: localhost
   port: 5432

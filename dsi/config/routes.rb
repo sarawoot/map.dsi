@@ -1,56 +1,66 @@
 Rails.application.routes.draw do
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+  resources :users, only: [:index, :new, :create, :edit, :update]
 
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  devise_for :users
 
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+  devise_scope :user do
+    get "/login" => "devise/sessions#new"
+  end
 
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+  # as :user do
+  #   get "/login" => "devise/sessions#new"
+  # end
 
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
+  root 'home#index'
+  # get "staff", to: 'home#staff', as: :staff
+  match 'process_input', 
+          to: 'dsi_respond#process_input', 
+          as: :process_input,
+          via: [:get, :post]
+  match 'file_upload', 
+          to: 'dsi_respond#file_upload', 
+          as: :file_upload,
+          via: [:get, :post]
+  match 'kml_delete', 
+          to: 'dsi_respond#kml_delete', 
+          as: :kml_delete,
+          via: [:get, :post]
+  match 'checkLonLat2', 
+          to: 'dsi_respond#checkLonLat2', 
+          as: :checkLonLat2,
+          via: [:get, :post]
+  match 'checkLonLatDD', 
+          to: 'dsi_respond#checkLonLatDD', 
+          as: :checkLonLatDD,
+          via: [:get, :post]
+  match 'checkUTM', 
+          to: 'dsi_respond#checkUTM', 
+          as: :checkUTM,
+          via: [:get, :post]
+  match 'checkUTMIndian', 
+          to: 'dsi_respond#checkUTMIndian', 
+          as: :checkUTMIndian,
+          via: [:get, :post]
+  match 'search_googlex', 
+          to: 'dsi_respond#search_googlex', 
+          as: :search_googlex,
+          via: [:get, :post]
+  match 'getPolygonWKT', 
+          to: 'dsi_respond#getPolygonWKT', 
+          as: :getPolygonWKT,
+          via: [:get, :post]   
+  match 'file_upload_xls', 
+          to: 'dsi_respond#file_upload_xls', 
+          as: :file_upload_xls,
+          via: [:get, :post]   
+  match 'check_forest_info', 
+          to: 'dsi_respond#check_forest_info', 
+          as: :check_forest_info,
+          via: [:get, :post]
+  match 'get_lonlat_from_ip', 
+          to: 'dsi_respond#get_lonlat_from_ip', 
+          as: :get_lonlat_from_ip,
+          via: [:get, :post]
 
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
-
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+          
 end

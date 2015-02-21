@@ -1,0 +1,16 @@
+<% content_for :css_head do %>
+  <link href="http://www.google.com/help/maps/streetview/css/streetview-style.css" rel="stylesheet">
+<% end %>
+<% content_for :js_head do %>
+  <script type="text/javascript" src="https://www.google.com/jsapi"> </script>
+  <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+  <script src="<%= asset_path("info.json?var=printCapabilities")%>"></script>
+  <script type="text/javascript">
+    username = null;
+    <% if user_signed_in? %>
+    username = "<%= current_user.email%>";
+    admin = <%= current_user.admin.to_i %>;
+    <% end %>
+  </script>
+<% end %>
+<div id='google_street'></div>

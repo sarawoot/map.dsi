@@ -1,0 +1,22 @@
+<div class="panel panel-primary">
+  <div class="panel-heading"><%= title %></div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1">
+        <%= simple_form_for(@user, html: {class: 'form-horizontal' }) do |f| %>
+          <% if @user.new_record? %>
+            <%= f.input :email, label: "อีเมล",placeholder: "อีเมล" %>  
+          <% else %>
+            <center><h4><%= @user.email %></h4></center>
+          <% end %>
+          <%= f.input :password, label: "รหัสผ่าน",placeholder: "รหัสผ่าน" %>  
+          <%= f.input :password_confirmation, label: "ยันยืนรหัสผ่าน",placeholder: "ยืนยันรหัสผ่าน" %>
+          <%= f.input :fname, label: "ชื่อ"%>
+          <%= f.input :lname, label: "นามสกุล"%>
+          <%= f.input :admin, label: "ผู้ดูแลระบบ", as: :boolean %>
+          <%= f.button :submit, "บันทึก", class: "btn btn-primary" %>
+        <% end %>        
+      </div>  
+    </div>
+  </div>
+</div>
