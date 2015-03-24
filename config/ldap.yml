@@ -1,0 +1,26 @@
+development:
+  host: 10.59.201.80
+  port: 389
+  attribute: sAMAccountName
+  base: DC=dsi,DC=go,DC=th
+  admin_user: caseadmin@dsi.go.th
+  admin_password: ADMIN@Dsi.go.th
+  ssl: false
+
+test:
+  host: 10.59.201.80
+  port: 389
+  attribute: sAMAccountName
+  base: DC=dsi,DC=go,DC=th
+  admin_user: caseadmin@dsi.go.th
+  admin_password: ADMIN@Dsi.go.th
+  ssl: false
+
+production:
+  host: 10.59.201.80
+  port: 389
+  attribute: sAMAccountName
+  base: DC=dsi,DC=go,DC=th
+  admin_user: caseadmin@dsi.go.th
+  admin_password: ADMIN@Dsi.go.th
+  ssl: false

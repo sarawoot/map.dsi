@@ -670,14 +670,14 @@ Ext.application({
           $("#sign_out").click();
         }
       }];
-      if(admin){
-        menu_items.push({
-          text: "จัดการผู้ใช้งาน",
-          handler: function(){
-            window.open(Routes.users_path());
-          }
-        })
-      }
+      // if(admin){
+      //   menu_items.push({
+      //     text: "จัดการผู้ใช้งาน",
+      //     handler: function(){
+      //       window.open(Routes.users_path());
+      //     }
+      //   })
+      // }
       btn_logout = new Ext.Button({
         text: username,
         menu: {

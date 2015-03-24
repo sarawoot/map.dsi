@@ -9,7 +9,7 @@
     username = null;
     <% if user_signed_in? %>
     username = "<%= current_user.email%>";
-    admin = <%= current_user.admin.to_i %>;
+    // admin = <%#= current_user.admin.to_i %>;
     <% end %>
   </script>
 <% end %>
