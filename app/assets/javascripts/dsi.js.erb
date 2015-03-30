@@ -45,7 +45,8 @@ Ext.application({
     // API key for http://10.59.200.70/dsi
     var apiKey = "AnXErkelqCPb0UC5K-lCookgNa4-IwF1Cehgg9En9wcFz7iGblBxbZfm4484_qqK";
 
-    OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
+    // OpenLayers.ProxyHost = "http://10.59.200.70/cgi-bin/proxy.cgi?url=";
+
 
     map = new OpenLayers.Map({
       projection: new OpenLayers.Projection("EPSG:900913"),
@@ -82,6 +83,27 @@ Ext.application({
         o.collapse();
       }
     });
+
+    // info = new OpenLayers.Control.WMSGetFeatureInfo({
+    //     url: 'http://10.59.200.70/cgi-bin/mapserv?map=/ms603/map/wms-dsi.map', 
+    //     title: 'รายละเอียด',
+    //     queryVisible: true,
+    //     eventListeners: {
+    //         getfeatureinfo: function(event) {
+    //           debugger
+    //             // map.addPopup(new OpenLayers.Popup.FramedCloud(
+    //             //     "chicken", 
+    //             //     map.getLonLatFromPixel(event.xy),
+    //             //     null,
+    //             //     event.text,
+    //             //     null,
+    //             //     true
+    //             // ));
+    //         }
+    //     }
+    // });
+    // map.addControl(info);
+    // info.activate();
 
     // Create all objects declared in map_utils.js
     create_styles();
@@ -765,9 +787,11 @@ Ext.application({
       layers: [
         new OpenLayers.Layer.WMS(
           "ATM กรุงไทย",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://10.59.200.70/cgi-bin/mapserv?map=/ms603/map/wms-dsi.map",
           {map: '/ms603/map/wms-dsi.map', layers: 'atm_ktb', transparent: true},
-          {isBaseLayer: false,visibility: false, displayInLayerSwitcher: (username)? true:false}
+          { isBaseLayer: false,visibility: false, 
+            displayInLayerSwitcher: (username)? true:false,
+            singleTile: true, ratio: 1 }
         ),
         new OpenLayers.Layer.WMS(
           "ป่าชายเลน ปี 2552",
