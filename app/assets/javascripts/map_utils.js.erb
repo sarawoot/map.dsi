@@ -1861,6 +1861,7 @@ function addWKTFeatures(wktString){
   map.zoomToExtent(bounds);
 }
 
+// ค้นหาสถานที่
 var myTextField = Ext.create("GeoExt.ux.QryComboBox",{
   id: 'id_query'
   ,fieldLabel: 'ค้นหา'
@@ -1918,6 +1919,101 @@ var searchquery = Ext.create("Ext.form.Panel",{
     }]
   }]
 });
+
+// ค้นหา ATM KTB
+Ext.define('atm', {
+  extend: 'Ext.data.Model',
+  fields: [
+    {type: 'string', name: 'short_name'},
+    {type: 'float', name: 'x'},
+    {type: 'float', name: 'y'},
+    {type: 'int', name: 'id'}
+  ]
+});
+
+var atmKtbField = Ext.create("Ext.form.ComboBox",{
+  id: 'atm_ktb_field'
+  ,fieldLabel: 'ค้นหา'
+  ,labelSeparator: ':'
+  ,labelWidth: 50
+  ,editable: true
+  ,minChars: 4
+  ,store: Ext.create('Ext.data.Store', {
+    model: 'atm',
+    proxy: {
+      type: 'ajax',
+      url : Routes.atm_ktb_path(),
+      reader: {
+        type: 'json',
+        root: "records",
+        totalProperty: "totalcount"
+      }
+    },
+    autoLoad: true,
+    pageSize: 10
+  })
+  ,pageSize: 10
+  ,triggerAction: 'all'
+  ,emptyText: 'Search...'
+  ,autoSelect: false
+  ,displayField: "short_name"
+  ,valueField: "id"
+});
+
+atmKtbField.on({
+  'select': {fn: function(){Ext.getCmp("btn_search_atm_ktb").enable();}, scope: this}
+});
+
+atmKtbField.on("specialkey", function(field, e) {
+  if ( e.getKey() == e.RETURN || e.getKey() == e.ENTER ) {
+    search_atm_ktb();
+  }
+}, this);
+
+var searchAtmKtb = Ext.create("Ext.form.Panel",{
+  id: 'id_searchatm_ktb'
+  ,labelAlign: 'left'
+  ,align: 'center'
+  ,frame: true
+  ,title: 'ค้นหา ATM  กรุงไทย'
+  ,bodyStyle: 'padding:5px 5px 5px'
+  ,width: 300
+  ,items: [{
+    layout: 'form'
+    ,labelWidth: 30
+    ,items: [ atmKtbField ]
+    ,bodyCfg: {tag: 'center'}
+    ,frame: true
+    ,buttons: [{
+      text: 'Search'
+      ,id: 'btn_search_atm_ktb'
+      ,handler: search_atm_ktb
+      ,disabled: true
+    },{
+      text: 'Clear'
+      ,handler: function(){
+        searchAtmKtb.getForm().reset();
+        Ext.getCmp('atm_ktb_field').focus();
+        Ext.getCmp('btn_search_atm_ktb').disable();
+      }
+    }]
+  }]
+});
+
+function search_atm_ktb(){
+  var el = Ext.getCmp("atm_ktb_field");
+  var record = el.findRecordByValue(el.getValue()).data;
+  var layer_tmp = map.getLayersByName("ATM กรุงไทย")[0]
+  if (layer_tmp.visibility) {
+    var idx = _.findIndex(layer_tmp.features, function(f){ return f.data.SHORT_NAME == record.short_name } );
+    var feature = layer_tmp.features[idx];
+    map.zoomToExtent(feature.geometry.getBounds())
+  } else {
+    alert("กรุณาเลือกชั้นข้อมูล \"ATM กรุงไทย\" ให้แสดงบนแผนที่ก่อน");
+  }
+}
+
+// End ค้นหา ATM KTB
 
 var loadxls = Ext.create("Ext.form.Panel",{
   id: 'id_loadxls'

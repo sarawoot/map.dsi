@@ -45,8 +45,7 @@ Ext.application({
     // API key for http://10.59.200.70/dsi
     var apiKey = "AnXErkelqCPb0UC5K-lCookgNa4-IwF1Cehgg9En9wcFz7iGblBxbZfm4484_qqK";
 
-    // OpenLayers.ProxyHost = "http://10.59.200.70/cgi-bin/proxy.cgi?url=";
-
+    OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
 
     map = new OpenLayers.Map({
       projection: new OpenLayers.Projection("EPSG:900913"),
@@ -83,27 +82,6 @@ Ext.application({
         o.collapse();
       }
     });
-
-    // info = new OpenLayers.Control.WMSGetFeatureInfo({
-    //     url: 'http://10.59.200.70/cgi-bin/mapserv?map=/ms603/map/wms-dsi.map', 
-    //     title: 'รายละเอียด',
-    //     queryVisible: true,
-    //     eventListeners: {
-    //         getfeatureinfo: function(event) {
-    //           debugger
-    //             // map.addPopup(new OpenLayers.Popup.FramedCloud(
-    //             //     "chicken", 
-    //             //     map.getLonLatFromPixel(event.xy),
-    //             //     null,
-    //             //     event.text,
-    //             //     null,
-    //             //     true
-    //             // ));
-    //         }
-    //     }
-    // });
-    // map.addControl(info);
-    // info.activate();
 
     // Create all objects declared in map_utils.js
     create_styles();
@@ -785,14 +763,36 @@ Ext.application({
       center: dsi,
       zoom: 6,
       layers: [
-        new OpenLayers.Layer.WMS(
-          "ATM กรุงไทย",
-          "http://10.59.200.70/cgi-bin/mapserv?map=/ms603/map/wms-dsi.map",
-          {map: '/ms603/map/wms-dsi.map', layers: 'atm_ktb', transparent: true},
-          { isBaseLayer: false,visibility: false, 
-            displayInLayerSwitcher: (username)? true:false,
-            singleTile: true, ratio: 1 }
-        ),
+        new OpenLayers.Layer.Vector("ATM กรุงไทย", {
+          projection: map.displayProjection,
+          strategies: [new OpenLayers.Strategy.BBOX()],
+          protocol: new OpenLayers.Protocol.HTTP({
+              url: "<%= asset_path("atm_ktb.json") %>",
+              format: new OpenLayers.Format.GeoJSON({
+                externalProjection: new OpenLayers.Projection("ESPG:4326"),
+                internalProjection: new OpenLayers.Projection("ESPG:900913")
+              })
+          }),
+          visibility: false,
+          displayInLayerSwitcher: (username)? true:false,
+          styleMap: new OpenLayers.Style({
+            pointRadius: 10,
+            externalGraphic: "<%= asset_path("ktb.png") %>",
+            label: '${getLabel}',
+            labelYOffset: -14
+          },{
+            context: {
+              getLabel: function(feature) {
+                if(feature.layer.map.getZoom() > 12) {
+                  return feature.attributes.SHORT_NAME;
+                }
+                else{
+                  return "";
+                }
+              }
+            }
+          })
+        }),
         new OpenLayers.Layer.WMS(
           "ป่าชายเลน ปี 2552",
           "http://10.59.200.70/cgi-bin/mapserv",
@@ -970,7 +970,7 @@ Ext.application({
       layout: 'accordion',
       items: [
         tree,gps2,gps_utm,gps_utm_indian,searchquery,loadxls
-      ],
+      ], 
       listeners: {
         render: {
           fn: function() {
@@ -982,6 +982,11 @@ Ext.application({
         }
       }
     });
+
+    if (username) {
+      panel_west.add(searchAtmKtb);
+      panel_west.doLayout();
+    }
 
     earth = Ext.create('Ext.Panel', {
       region: 'east'
@@ -1020,6 +1025,33 @@ Ext.application({
 
     // Add marquee animation here
     $('.marquee').marquee();
+
+    var atm_ktb = map.getLayersByName("ATM กรุงไทย")[0];
+    var selectedFeature;
+    var selectControl = new OpenLayers.Control.SelectFeature(atm_ktb,
+      {
+        onSelect: function(feature) {
+          selectedFeature = feature;
+          popup = new OpenLayers.Popup.FramedCloud("chicken", 
+            feature.geometry.getBounds().getCenterLonLat(),
+            null,
+            feature.attributes.SHORT_NAME,
+            null, true, function(evt) {
+              selectControl.unselect(selectedFeature);
+            });
+          feature.popup = popup;
+          map.addPopup(popup);
+        }, 
+        onUnselect: function(feature) {
+          map.removePopup(feature.popup);
+          feature.popup.destroy();
+          feature.popup = null;
+        } });
+
+    map.addControl(selectControl);
+    selectControl.activate();
+
+    
 
   }
 

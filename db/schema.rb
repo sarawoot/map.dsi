@@ -11,11 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324050404) do
+ActiveRecord::Schema.define(version: 20150330074247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+# Could not dump table "atm_ktb" because of following StandardError
+#   Unknown type 'geometry(Point,4326)' for column 'geom'
 
   create_table "cca00_02", id: false, force: :cascade do |t|
     t.string  "sitecode"

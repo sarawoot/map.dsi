@@ -273,4 +273,26 @@ class DsiRespondController < ApplicationController
     data = "{success:true, 'lon':#{lon}, 'lat':#{lat}}"
     render text: data
   end
+
+  def atm_ktb
+    query = params[:query]
+    start = params[:start].to_i
+    limit = params[:limit].to_i
+    search = ""
+    search = " short_name like '%#{query}%' " if query.present?
+    sql = AtmKtb.where(search)
+    datas = {}
+    datas[:success] = true
+    datas[:records] = sql.select("gid, short_name, st_x(geom) as x, st_y(geom) as y ")
+      .limit(limit)
+      .offset(start)
+      .map{|u| {
+        short_name: u.short_name,
+        x: u.x,
+        y: u.y,
+        id: u.gid
+      } }
+    datas[:totalcount] = sql.count
+    render text: datas.to_json
+  end
 end
