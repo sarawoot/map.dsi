@@ -42,7 +42,7 @@ Ext.application({
 
     var ctrl = new OpenLayers.Control.NavigationHistory();
     // Add Bing Map
-    // API key for http://10.59.200.70/dsi
+    // API key for http://map.dsi.go.th/dsi
     var apiKey = "AnXErkelqCPb0UC5K-lCookgNa4-IwF1Cehgg9En9wcFz7iGblBxbZfm4484_qqK";
 
     OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
@@ -718,7 +718,7 @@ Ext.application({
 
     var utmgrid = new OpenLayers.Layer.WMS(
       "UTM Grid",
-      "http://10.59.200.70/cgi-bin/mapserv",
+      "http://map.dsi.go.th/cgi-bin/mapserv",
       {
         map: '/ms603/map/wms-thai.map',
         layers: "utm_wgs",
@@ -795,79 +795,79 @@ Ext.application({
         }),
         new OpenLayers.Layer.WMS(
           "ป่าชายเลน ปี 2552",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2552', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
         new OpenLayers.Layer.WMS(
           "ป่าชายเลน ปี 2543",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2543', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
         new OpenLayers.Layer.WMS(
           "ป่าชายเลน ปี 2530",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2530', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
         new OpenLayers.Layer.WMS(
           "เขตป่าสงวน",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'rforest', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'rforest'}
         ),
         new OpenLayers.Layer.WMS(
           "เขตอุทยานแห่งชาติ",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'npark', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'npark'}
         ),
         new OpenLayers.Layer.WMS(
           "พื้นที่สปก.",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_22_spk', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
         new OpenLayers.Layer.WMS(
           "แหล่งแร่",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_14_mineral', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
         new OpenLayers.Layer.WMS(
           "ธรณีวิทยา",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_13_geology', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
         new OpenLayers.Layer.WMS(
           "หมู่บ้าน",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_06_muban', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'village', singleTile: true}
         ),
         new OpenLayers.Layer.WMS(
           "ตำบล",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_04_tambon', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'tambon'}
         ),
         new OpenLayers.Layer.WMS(
           "อำเภอ",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_03_amphoe', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'amphur'}
         ),
         new OpenLayers.Layer.WMS(
           "จังหวัด",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'no_02_province', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'changwat'}
         ),
         new OpenLayers.Layer.WMS(
           "ชั้นความสูง",
-          "http://10.59.200.70/cgi-bin/mapserv",
+          "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'contour', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'dem'}
         ),
