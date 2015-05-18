@@ -11,4 +11,4 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 
 
-Rails.application.config.assets.precompile += %w( user.css user.js )
+Rails.application.config.assets.precompile += %w( user.css user.js atm_ktb_map.css atm_ktb_map.js )

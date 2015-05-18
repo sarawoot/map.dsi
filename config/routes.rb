@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'atm_ktb_map/index'
+
   # resources :users, only: [:index, :new, :create, :edit, :update]
 
   devise_for :users
@@ -65,4 +67,8 @@ Rails.application.routes.draw do
           to: 'dsi_respond#atm_ktb', 
           as: :atm_ktb,
           via: [:get, :post]
+  match 'atm_ktb_map', 
+          to: 'atm_ktb_map#index', 
+          as: :atm_ktb_map,
+          via: [:get]
 end

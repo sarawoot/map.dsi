@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dsi</title>
+  <%= favicon_link_tag %>
+  <%= stylesheet_link_tag    'atm_ktb_map', media: 'all', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <%= yield %>
+
+  <%= javascript_include_tag 'atm_ktb_map', 'data-turbolinks-track' => true %>
+</body>
+</html>
