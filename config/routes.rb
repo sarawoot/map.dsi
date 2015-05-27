@@ -63,6 +63,7 @@ Rails.application.routes.draw do
           to: 'dsi_respond#get_lonlat_from_ip', 
           as: :get_lonlat_from_ip,
           via: [:get, :post]
+
   match 'atm_ktb', 
           to: 'dsi_respond#atm_ktb', 
           as: :atm_ktb,
@@ -71,4 +72,15 @@ Rails.application.routes.draw do
           to: 'atm_ktb_map#index', 
           as: :atm_ktb_map,
           via: [:get]
+
+  match 'atm_ktb_layer',
+        to: 'atm#ktb',
+        as: :atm_ktb_layer,
+        via: [:get, :post]
+
+  match 'atm_kbank_layer',
+        to: 'atm#kbank',
+        as: :atm_kbank_layer,
+        via: [:get, :post]
+
 end

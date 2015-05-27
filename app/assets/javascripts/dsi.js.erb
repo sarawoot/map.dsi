@@ -763,11 +763,41 @@ Ext.application({
       center: dsi,
       zoom: 6,
       layers: [
+        new OpenLayers.Layer.Vector("ATM กสิกรไทย", {
+          projection: map.displayProjection,
+          strategies: [new OpenLayers.Strategy.BBOX()],
+          protocol: new OpenLayers.Protocol.HTTP({
+              url: "<%= atm_kbank_layer_path %>",
+              format: new OpenLayers.Format.GeoJSON({
+                externalProjection: new OpenLayers.Projection("ESPG:4326"),
+                internalProjection: new OpenLayers.Projection("ESPG:900913")
+              })
+          }),
+          visibility: false,
+          displayInLayerSwitcher: (username)? true:false,
+          styleMap: new OpenLayers.Style({
+            pointRadius: 10,
+            externalGraphic: "<%= asset_path("kbank.png") %>",
+            label: '${getLabel}',
+            labelYOffset: -14
+          },{
+            context: {
+              getLabel: function(feature) {
+                if(feature.layer.map.getZoom() > 12) {
+                  return feature.attributes.SHORT_NAME;
+                }
+                else{
+                  return "";
+                }
+              }
+            }
+          })
+        }),
         new OpenLayers.Layer.Vector("ATM กรุงไทย", {
           projection: map.displayProjection,
           strategies: [new OpenLayers.Strategy.BBOX()],
           protocol: new OpenLayers.Protocol.HTTP({
-              url: "<%= asset_path("atm_ktb.json") %>",
+              url: "<%= atm_ktb_layer_path %>",
               format: new OpenLayers.Format.GeoJSON({
                 externalProjection: new OpenLayers.Projection("ESPG:4326"),
                 internalProjection: new OpenLayers.Projection("ESPG:900913")
@@ -1026,32 +1056,58 @@ Ext.application({
     // Add marquee animation here
     $('.marquee').marquee();
 
-    var atm_ktb = map.getLayersByName("ATM กรุงไทย")[0];
-    var selectedFeature;
-    var selectControl = new OpenLayers.Control.SelectFeature(atm_ktb,
-      {
-        onSelect: function(feature) {
-          selectedFeature = feature;
-          popup = new OpenLayers.Popup.FramedCloud("chicken", 
-            feature.geometry.getBounds().getCenterLonLat(),
-            null,
-            feature.attributes.SHORT_NAME,
-            null, true, function(evt) {
-              selectControl.unselect(selectedFeature);
-            });
-          feature.popup = popup;
-          map.addPopup(popup);
-        }, 
-        onUnselect: function(feature) {
-          map.removePopup(feature.popup);
-          feature.popup.destroy();
-          feature.popup = null;
-        } });
+    if (username) {
+      var atm_ktb = map.getLayersByName("ATM กรุงไทย")[0];
+      var selectedFeature_ktb;
+      var selectControl_ktb = new OpenLayers.Control.SelectFeature(atm_ktb,
+        {
+          onSelect: function(feature) {
 
-    map.addControl(selectControl);
-    selectControl.activate();
+            selectedFeature_ktb = feature;
+            popup = new OpenLayers.Popup.FramedCloud("chicken", 
+              feature.geometry.getBounds().getCenterLonLat(),
+              null,
+              feature.attributes.SHORT_NAME,
+              null, true, function(evt) {
+                selectControl_ktb.unselect(selectedFeature_ktb);
+              });
+            feature.popup = popup;
+            map.addPopup(popup);
+          }, 
+          onUnselect: function(feature) {
+            map.removePopup(feature.popup);
+            feature.popup.destroy();
+            feature.popup = null;
+          } });
+      map.addControl(selectControl_ktb);
+      selectControl_ktb.activate();
 
+      var atm_kbank = map.getLayersByName("ATM กสิกรไทย")[0];
+      var selectedFeature_kbank;
+      var selectControl_kbank = new OpenLayers.Control.SelectFeature(atm_kbank,
+        {
+          onSelect: function(feature) {
+            selectedFeature_kbank = feature;
+            popup = new OpenLayers.Popup.FramedCloud("chicken", 
+              feature.geometry.getBounds().getCenterLonLat(),
+              null,
+              feature.attributes.SHORT_NAME,
+              null, true, function(evt) {
+                selectControl_kbank.unselect(selectedFeature_kbank);
+              });
+            feature.popup = popup;
+            map.addPopup(popup);
+          }, 
+          onUnselect: function(feature) {
+            map.removePopup(feature.popup);
+            feature.popup.destroy();
+            feature.popup = null;
+          } });  
+      map.addControl(selectControl_kbank);
+      selectControl_kbank.activate();
     
+    }
+
 
   }
 

@@ -275,24 +275,37 @@ class DsiRespondController < ApplicationController
   end
 
   def atm_ktb
-    query = params[:query]
-    start = params[:start].to_i
-    limit = params[:limit].to_i
-    search = ""
-    search = " short_name like '%#{query}%' " if query.present?
-    sql = AtmKtb.where(search)
-    datas = {}
-    datas[:success] = true
-    datas[:records] = sql.select("gid, short_name, st_x(geom) as x, st_y(geom) as y ")
-      .limit(limit)
-      .offset(start)
-      .map{|u| {
-        short_name: u.short_name,
-        x: u.x,
-        y: u.y,
-        id: u.gid
-      } }
-    datas[:totalcount] = sql.count
-    render text: datas.to_json
+    # query = params[:query]
+    # start = params[:start].to_i
+    # limit = params[:limit].to_i
+    # search = ""
+    # search = " short_name like '%#{query}%' " if query.present?
+    # sql = AtmKtb.where(search)
+    # datas = {}
+    # datas[:success] = true
+    # datas[:records] = sql.select("gid, short_name, st_x(geom) as x, st_y(geom) as y ")
+    #   .limit(limit)
+    #   .offset(start)
+    #   .map{|u| {
+    #     short_name: u.short_name,
+    #     x: u.x,
+    #     y: u.y,
+    #     id: u.gid
+    #   } }
+    # datas[:totalcount] = sql.count
+    # render text: datas.to_json
+
+    res = RestClient.post 'http://172.16.7.15/dsi-i2-ws/map.asmx/GetAtmMapCombobox', 
+                          {
+                            bank_code: params[:bank_code],
+                            query: params[:query],
+                            page: params[:page],
+                            start: params[:start],
+                            limit: params[:limit]
+                          }, 
+                          :content_type => :json, :accept => :json
+    # body = JSON.parse(res.body)
+    render text: res.body
+
   end
 end

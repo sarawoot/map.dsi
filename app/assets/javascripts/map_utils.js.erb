@@ -1920,7 +1920,7 @@ var searchquery = Ext.create("Ext.form.Panel",{
   }]
 });
 
-// ค้นหา ATM KTB
+// ค้นหา ATM
 Ext.define('atm', {
   extend: 'Ext.data.Model',
   fields: [
@@ -1930,6 +1930,51 @@ Ext.define('atm', {
     {type: 'int', name: 'id'}
   ]
 });
+
+Ext.define('atm_type', {
+  extend: 'Ext.data.Model',
+  fields: [
+    {type: 'string', name: 'bank_name'},
+    {type: 'string', name: 'val'}
+  ]
+});
+
+var atm_type = Ext.create('Ext.data.Store', {
+    model: 'atm_type',
+    data: [
+      {bank_name: "ธนาคารกรุงไทย", val: "006"},
+      {bank_name: "ธนาคารกสิกรไทย", val: "004"}
+    ]
+});
+
+var atm_typeCombo = Ext.create('Ext.form.field.ComboBox', {
+    id: 'atm_type',
+    fieldLabel: 'ธนาคาร',
+    displayField: 'bank_name',
+    valueField: "val",
+    labelWidth: 50,
+    store: atm_type,
+    queryMode: 'local',
+    typeAhead: true,
+    listeners: {
+      change: function( el, newValue, oldValue ){
+        var sl = Ext.getCmp("atm_ktb_field");
+        var store = sl.getStore();
+        store.setProxy({
+          type: 'ajax',
+          url : Routes.atm_ktb_path({bank_code: newValue}),
+          reader: {
+            type: 'json',
+            root: "records",
+            totalProperty: "totalcount"
+          }
+        });
+        store.load();
+        sl.clearValue();
+      }
+    }
+});
+
 
 var atmKtbField = Ext.create("Ext.form.ComboBox",{
   id: 'atm_ktb_field'
@@ -1942,7 +1987,7 @@ var atmKtbField = Ext.create("Ext.form.ComboBox",{
     model: 'atm',
     proxy: {
       type: 'ajax',
-      url : Routes.atm_ktb_path(),
+      url : Routes.atm_ktb_path({bank_code: '000'}),
       reader: {
         type: 'json',
         root: "records",
@@ -1954,7 +1999,7 @@ var atmKtbField = Ext.create("Ext.form.ComboBox",{
   })
   ,pageSize: 10
   ,triggerAction: 'all'
-  ,emptyText: 'Search...'
+  // ,emptyText: 'Search...'
   ,autoSelect: false
   ,displayField: "short_name"
   ,valueField: "id"
@@ -1975,13 +2020,16 @@ var searchAtmKtb = Ext.create("Ext.form.Panel",{
   ,labelAlign: 'left'
   ,align: 'center'
   ,frame: true
-  ,title: 'ค้นหา ATM  กรุงไทย'
+  ,title: 'ค้นหา ATM'
   ,bodyStyle: 'padding:5px 5px 5px'
   ,width: 300
   ,items: [{
     layout: 'form'
     ,labelWidth: 30
-    ,items: [ atmKtbField ]
+    ,items: [
+      atm_typeCombo,
+      atmKtbField 
+    ]
     ,bodyCfg: {tag: 'center'}
     ,frame: true
     ,buttons: [{
@@ -2003,13 +2051,24 @@ var searchAtmKtb = Ext.create("Ext.form.Panel",{
 function search_atm_ktb(){
   var el = Ext.getCmp("atm_ktb_field");
   var record = el.findRecordByValue(el.getValue()).data;
-  var layer_tmp = map.getLayersByName("ATM กรุงไทย")[0]
+  var atm_type_val = Ext.getCmp("atm_type").getValue();
+  var layer_tmp;
+  if (atm_type_val == '004') {
+    layer_tmp = map.getLayersByName("ATM กสิกรไทย")[0]  
+  }
+  if (atm_type_val == '006') {
+    layer_tmp = map.getLayersByName("ATM กรุงไทย")[0]  
+  }
+  if (!layer_tmp) { 
+    alert("กรุณาทำรายการให้ครบ");
+    return false;
+  }
   if (layer_tmp.visibility) {
     var idx = _.findIndex(layer_tmp.features, function(f){ return f.data.SHORT_NAME == record.short_name } );
     var feature = layer_tmp.features[idx];
     map.zoomToExtent(feature.geometry.getBounds())
   } else {
-    alert("กรุณาเลือกชั้นข้อมูล \"ATM กรุงไทย\" ให้แสดงบนแผนที่ก่อน");
+    alert("กรุณาเลือกชั้นข้อมูล \"ATM\" ให้แสดงบนแผนที่ก่อน");
   }
 }
 

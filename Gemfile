@@ -52,3 +52,5 @@ gem 'devise'
 gem 'simple_form', '~> 3.1.0.rc1', github: 'plataformatec/simple_form', branch: 'master'
 gem 'bootstrap-sass'
 gem "devise_ldap_authenticatable"
+gem 'rest-client'
+gem 'coordinate-converter'
