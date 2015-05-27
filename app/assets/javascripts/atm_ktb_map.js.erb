@@ -23,6 +23,10 @@ var map = new ol.Map({
   })
 });
 
+var icon = '<%= asset_path("ktb.png") %>';
+if (bank_code == "004") {
+  var icon = '<%= asset_path("kbank.png") %>';
+}
 var featureOverlay = new ol.FeatureOverlay({
   style: function(feature, resolution) {
     var style = [new ol.style.Style({
@@ -37,7 +41,7 @@ var featureOverlay = new ol.FeatureOverlay({
         anchor: [0.5, 32],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: '<%= asset_path("ktb.png") %>'
+        src: icon
       }),
       text: new ol.style.Text({
         font: "12px Calibri,sans-serif",
