@@ -773,7 +773,7 @@ Ext.application({
                 internalProjection: new OpenLayers.Projection("ESPG:900913")
               })
           }),
-          visibility: false,
+          visibility: atm_value.bank_code == '004',
           displayInLayerSwitcher: (username)? true:false,
           styleMap: new OpenLayers.Style({
             pointRadius: 10,
@@ -803,7 +803,7 @@ Ext.application({
                 internalProjection: new OpenLayers.Projection("ESPG:900913")
               })
           }),
-          visibility: false,
+          visibility: atm_value.bank_code == '006',
           displayInLayerSwitcher: (username)? true:false,
           styleMap: new OpenLayers.Style({
             pointRadius: 10,
@@ -1108,6 +1108,11 @@ Ext.application({
     
     }
 
+    if( !isEmpty(atm_value) ){
+      var center_atm = new OpenLayers.LonLat(atm_value.longitude, atm_value.latitude)
+      center_atm = center_atm.transform(gcs,merc);
+      map.setCenter(center_atm, 16);
+    }
 
   }
 

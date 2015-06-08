@@ -14,7 +14,9 @@ Rails.application.routes.draw do
   # end
 
   root 'home#index'
-  # get "staff", to: 'home#staff', as: :staff
+  
+  get "home", to: 'home#index', as: :home
+
   match 'process_input', 
           to: 'dsi_respond#process_input', 
           as: :process_input,
