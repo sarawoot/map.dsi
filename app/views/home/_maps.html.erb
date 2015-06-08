@@ -9,8 +9,8 @@
     username = null;
     <% if user_signed_in? %>
     username = "<%= current_user.email%>";
-    var atm_value = JSON.parse("<%= escape_javascript(raw(@atm.to_json)) %>");
     <% end %>
+    var atm_value = JSON.parse("<%= escape_javascript(raw(@atm.to_json)) %>");
   </script>
 <% end %>
 <div id='google_street'></div>
