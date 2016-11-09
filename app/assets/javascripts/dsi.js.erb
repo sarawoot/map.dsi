@@ -823,24 +823,26 @@ Ext.application({
             }
           })
         }),
+
         new OpenLayers.Layer.WMS(
           "ป่าชายเลน ปี 2552",
           "http://map.dsi.go.th/cgi-bin/mapserv",
           {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2552', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
-        new OpenLayers.Layer.WMS(
-          "ป่าชายเลน ปี 2543",
-          "http://map.dsi.go.th/cgi-bin/mapserv",
-          {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2543', transparent: true},
-          {isBaseLayer: false,visibility: false}
-        ),
-        new OpenLayers.Layer.WMS(
-          "ป่าชายเลน ปี 2530",
-          "http://map.dsi.go.th/cgi-bin/mapserv",
-          {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2530', transparent: true},
-          {isBaseLayer: false,visibility: false}
-        ),
+        // remove 2543 and 2530 by drtoon @ 20161109
+        ////new OpenLayers.Layer.WMS(
+          ////"ป่าชายเลน ปี 2543",
+          ////"http://map.dsi.go.th/cgi-bin/mapserv",
+          ////{map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2543', transparent: true},
+          ////{isBaseLayer: false,visibility: false}
+        ////),
+        ////new OpenLayers.Layer.WMS(
+          ////"ป่าชายเลน ปี 2530",
+          ////"http://map.dsi.go.th/cgi-bin/mapserv",
+          ////{map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2530', transparent: true},
+          ////{isBaseLayer: false,visibility: false}
+        ////),
         new OpenLayers.Layer.WMS(
           "เขตป่าสงวน",
           "http://map.dsi.go.th/cgi-bin/mapserv",
@@ -991,7 +993,9 @@ Ext.application({
 
     panel_west = Ext.create("Ext.Panel",{
       region: 'west',
-      title: '<span class="logo"><font color="red">DSIMAP</font><br />กรมสอบสวนคดีพิเศษ</span><div class="marquee">ข้อมูลภาพแผนที่ใช้เพื่อการตรวจสอบข้อมูลเบื้องต้นเท่านั้น ...</div>',
+      // change marquee by drtoon 20161109
+      //title: '<span class="logo"><font color="red">DSIMAP</font><br />กรมสอบสวนคดีพิเศษ</span><div class="marquee">ข้อมูลภาพแผนที่ใช้เพื่อการตรวจสอบข้อมูลเบื้องต้นเท่านั้น ...</div>',
+      title: '<span class="logo"><font color="red">DSIMAP</font><br />กรมสอบสวนคดีพิเศษ</span>',
       width: 270,
       border: true,
       margins: '5 0 0 5',
@@ -1045,8 +1049,19 @@ Ext.application({
       ,items: {
         layout: 'border'
         ,deferredRender: false
-        //items: [mapPanel, panel_west, earth]
-        ,items: [mapPanel, panel_west]
+        //,items: [mapPanel, panel_west, earth]
+        //,items: [mapPanel, panel_west]
+        // change marquee by drtoon @ 20161109
+        ,items: [
+          mapPanel,
+          panel_west,
+          {
+            xtype: "panel",
+            region: "south",
+            height: 30,
+            html: '<div class="marquee" style="font-size:20px;height:30px;">ข้อมูลภาพแผนที่ใช้เพื่อการตรวจสอบข้อมูลเบื้องต้นเท่านั้น ...</div>'
+          }
+        ]
       }
     });
 
@@ -1054,7 +1069,7 @@ Ext.application({
     // map.setBaseLayer(bing_road);
 
     // Add marquee animation here
-    $('.marquee').marquee();
+    // $('.marquee').marquee();
 
     if (username) {
       var atm_ktb = map.getLayersByName("ATM กรุงไทย")[0];
@@ -1114,6 +1129,7 @@ Ext.application({
       map.setCenter(center_atm, 16);
     }
 
+    // Add marquee animation here by drtoon @ 20161109
+    $('.marquee').marquee({pauseOnHover: true, duration: 10000});
   }
-
 });

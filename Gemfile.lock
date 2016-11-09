@@ -1,12 +1,3 @@
-GIT
-  remote: git://github.com/plataformatec/simple_form.git
-  revision: c679153ee99aefa39a7583564f2cd4bf9c0ca00b
-  branch: master
-  specs:
-    simple_form (3.1.0)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -216,6 +207,9 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    simple_form (3.1.0)
+      actionpack (~> 4.0)
+      activemodel (~> 4.0)
     slop (3.6.0)
     spreadsheet (1.0.1)
       ruby-ole (>= 1.0)
@@ -277,10 +271,13 @@ DEPENDENCIES
   roo
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
-  simple_form (~> 3.1.0.rc1)!
+  simple_form (~> 3.1.0)
   spring
   therubyracer
   turbolinks
   uglifier (>= 1.3.0)
   unicorn
   web-console (~> 2.0)
+
+BUNDLED WITH
+   1.10.4

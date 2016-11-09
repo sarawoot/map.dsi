@@ -49,7 +49,7 @@ gem 'js-routes'
 gem 'roo'
 gem 'geo_ip'
 gem 'devise'
-gem 'simple_form', '~> 3.1.0.rc1', github: 'plataformatec/simple_form', branch: 'master'
+gem 'simple_form', '~> 3.1.0'
 gem 'bootstrap-sass'
 gem "devise_ldap_authenticatable"
 gem 'rest-client'

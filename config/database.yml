@@ -4,7 +4,7 @@ default: &default
   pool: 5
   database: dsi
   username: admin
-  password: 123456
+  password: 
   host: localhost
   port: 5432
 

@@ -716,7 +716,7 @@ create_layer_markers = function() {
 
 create_layer_hili = function() {
   hili = new OpenLayers.Layer.WMS("Hili"
-    ,"http://203.151.201.129/cgi-bin/mapserv"
+    ,"http://118.174.9.78/cgi-bin/mapserv"
     ,{
       map: '/ms603/map/hili.map'
       ,layers: 'hili'
@@ -2008,7 +2008,7 @@ var atmKtbField = Ext.create("Ext.form.ComboBox",{
     model: 'atm',
     proxy: {
       type: 'ajax',
-      url : Routes.atm_ktb_path({bank_code: '000'}),
+      url : "", //Routes.atm_ktb_path({bank_code: '000'}),
       reader: {
         type: 'json',
         root: "records",
