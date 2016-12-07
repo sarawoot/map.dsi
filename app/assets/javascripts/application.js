@@ -3,6 +3,8 @@
 //= require turbolinks
 //= require js-routes
 //= require extjs4/ext-all
+//= require proj4
+//= require map_proj
 //= require OpenLayers-2.12/OpenLayers
 //= require OpenLayers-2.12/lib/OpenLayers/Control/DeleteFeature
 //= require map_utils
@@ -12,3 +14,4 @@
 //= require GeodesicTools
 //= require jquery.marquee.min
 //= require underscore-min
+//= require polyline

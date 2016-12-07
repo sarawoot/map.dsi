@@ -308,4 +308,10 @@ class DsiRespondController < ApplicationController
     render text: res.body
 
   end
+
+  def google_direction
+    url = "https://maps.googleapis.com/maps/api/directions/json?origin=#{params[:start]}&destination=#{params[:end]}&alternatives=true"
+    res = RestClient.get(url)
+    render text: res.body
+  end
 end

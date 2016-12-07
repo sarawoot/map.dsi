@@ -381,24 +381,24 @@ Ext.application({
     });
     toolbarItems.push(Ext.create('Ext.button.Button', action));
 
-    //toolbarItems.push("-");
+    toolbarItems.push("-");
 
     // Add Input Form 05/08/2012
-    //action = Ext.create('GeoExt.Action', {
-    //  iconCls: "info"
-    //  ,id: 'id_select_feat'
-    //  ,control: frm_input_ctrl
-    //  ,tooltip: 'แบบฟอร์มนำเข้าข้อมูลจากผู้ใช้งาน'
-    //  ,map: map
-    //  ,enableToggle: true
-    //  ,toggleGroup: "map"
-    //  ,allowDepress: true
-    //  ,handler: function() {
-    //    if (pointLayer && pointLayer.visibility == true)
-    //      pointLayer.setVisibility(false);
-    //  }
-    //});
-    //toolbarItems.push(Ext.create('Ext.button.Button', action));
+    action = Ext.create('GeoExt.Action', {
+     iconCls: "info"
+     ,id: 'id_select_feat'
+     ,control: frm_input_ctrl
+     ,tooltip: 'แบบฟอร์มนำเข้าข้อมูลจากผู้ใช้งาน'
+     ,map: map
+     ,enableToggle: true
+     ,toggleGroup: "map"
+     ,allowDepress: true
+     ,handler: function() {
+       if (pointLayer && pointLayer.visibility == true)
+         pointLayer.setVisibility(false);
+     }
+    });
+    toolbarItems.push(Ext.create('Ext.button.Button', action));
 
     toolbarItems.push("-");
 
@@ -593,6 +593,274 @@ Ext.application({
     toolbarItems.push(button);
 
     toolbarItems.push("-");
+
+    // Direction
+    function decodeLine (encoded) {
+      var len = encoded.length;
+      var index = 0;
+      var array = [];
+      var lat = 0;
+      var lng = 0;
+
+      while (index < len) {
+        var b;
+        var shift = 0;
+        var result = 0;
+        do {
+          b = encoded.charCodeAt(index++) - 63;
+          result |= (b & 0x1f) << shift;
+          shift += 5;
+        } while (b >= 0x20);
+        var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lat += dlat;
+
+        shift = 0;
+        result = 0;
+        do {
+          b = encoded.charCodeAt(index++) - 63;
+          result |= (b & 0x1f) << shift;
+          shift += 5;
+        } while (b >= 0x20);
+        var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lng += dlng;
+
+        array.push({longitude:lng * 1e-5, latitude:lat * 1e-5});
+      }
+
+      return array;
+    }
+
+    function showWinDirection(map, vectorLayer){
+      vectorLayer.removeFeatures(
+        _.select(vectorLayer.features, function(f){ 
+          return f.data.type == 'direction_start' || f.data.type == 'direction_end' ||
+            f.data.route == 'main' || f.data.route == 'sub'
+      }));
+      // new OpenLayers.Control.DragFeature(vectors)
+      var drawFeature;
+      var win = new Ext.Window({
+        height: 150,
+        width: 300,
+        constrain: true,
+        collapsible: true,
+        layout: 'form',
+        title: 'ค้นหาเส้นทาง',
+        items: [
+          {
+            xtype: 'container',
+            layout:'hbox',
+            items: [{
+                xtype: 'textfield',
+                width: 220,
+                id: 'direction_start',
+                readOnly: true
+              },
+              Ext.create('Ext.Button',{
+                text: 'จุดเริ่มต้น',
+                handler: function() {
+                  if (drawFeature) {
+                    map.removeControl(drawFeature);
+                    drawFeature.deactivate();
+                    drawFeature = undefined
+                  }
+                  drawFeature = new OpenLayers.Control.DrawFeature(vectorLayer, 
+                    OpenLayers.Handler.Point, { 
+                      eventListeners: {
+                        featureadded: function(feature,a){
+                          vectorLayer.removeFeatures(
+                            _.select(vectorLayer.features, function(f){ 
+                              return f.data.type == 'direction_start'
+                          }));
+                          var feature = feature.feature;
+                          feature.attributes.type = 'direction_start';
+                          feature.data.type = 'direction_start';
+                          vectorLayer.redraw()
+
+                          var geom = feature.geometry.clone();
+                          geom.transform(merc, gcs);
+                          Ext.getCmp("direction_start").setValue(geom.y+","+geom.x);
+                        }
+                    }
+                  })
+                  map.addControl(drawFeature);
+                  drawFeature.activate(true);
+                }
+            })]
+          }, {
+            xtype: 'container',
+            layout:'hbox',
+            items: [{
+                xtype: 'textfield',
+                id: 'direction_end',
+                width: 220,
+                readOnly: true
+              },
+              Ext.create('Ext.Button',{
+                text: 'จุดสิ้นสุด',
+                handler: function() {
+                  if (drawFeature) {
+                    map.removeControl(drawFeature);
+                    drawFeature.deactivate();
+                    drawFeature = undefined
+                  }
+                  drawFeature = new OpenLayers.Control.DrawFeature(vectorLayer, 
+                    OpenLayers.Handler.Point, { 
+                      eventListeners: {
+                        featureadded: function(feature,a){
+                          vectorLayer.removeFeatures(
+                            _.select(vectorLayer.features, function(f){ 
+                              return f.data.type == 'direction_end'
+                          }));
+                          var feature = feature.feature;
+                          feature.attributes.type = 'direction_end';
+                          feature.data.type = 'direction_end';
+                          vectorLayer.redraw();
+                          var geom = feature.geometry.clone();
+                          geom.transform(merc, gcs);
+                          Ext.getCmp("direction_end").setValue(geom.y+","+geom.x);
+                        }
+                    }
+                  })
+                  map.addControl(drawFeature);
+                  drawFeature.activate(true);
+                }
+            })]
+          }, {
+            xtype: 'combo',
+            allowBlank: false,
+            id: 'route_selection',
+            forceSelection: true,
+            editable: false,
+            disabled: true,
+            fieldLabel: false,
+            emptyText: 'เลือกเส้นทาง',
+            store: new Ext.data.SimpleStore({
+              fields: ['route', 'value'],
+              data: []
+            }),
+            displayField: 'route',
+            valueField: 'value',
+            selectOnFocus: true,
+            mode: 'local',
+            triggerAction: 'all',
+            listeners: {
+              change: function( el, newValue, oldValue ){
+                vectorLayer.removeFeatures(
+                  _.select(vectorLayer.features, function(f){ 
+                    return f.data.route == 'main' || f.data.route == 'sub'
+                }));
+                _.each(newValue, function(line){
+                  vectorLayer.addFeatures([line]);
+                });
+              }
+            }
+          }
+        ],
+        buttons: [{
+          text: 'ยืนยัน',
+          handler: function() {
+            $.ajax({
+              url: Routes.google_direction_path(),
+              dataType: 'json',
+              type: 'GET',
+              data: {
+                start: Ext.getCmp("direction_start").getValue(),
+                end: Ext.getCmp("direction_end").getValue()
+              },
+              success: $.proxy(function(res) {
+                vectorLayer.removeFeatures(
+                  _.select(vectorLayer.features, function(f){ 
+                    return f.data.route == 'main' || f.data.route == 'sub'
+                }));
+                if (res.status == 'ZERO_RESULTS') {
+                  alert("ไม่พบข้อมูล");
+                  return false;
+                }
+                var decodeLine = this.decodeLine;
+                var data = []
+                _.each(res.routes, function(route, idx) {              
+                  var distance = route.legs[0].distance.text;
+                  var feature_routes = [];
+                  _.each(route.legs[0].steps, function(step) {
+                    points = _.map(polyline.decode(step.polyline.points), function(point) {
+                      return new OpenLayers.Geometry.Point(point[1], point[0]).transform(gcs, merc);
+                    });
+
+                    var feature = new OpenLayers.Feature.Vector(
+                          new OpenLayers.Geometry.LineString(points),
+                          {route: 'main'});
+                    feature_routes.push(feature)
+                    // var feature = new OpenLayers.Feature.Vector(
+                    //   new OpenLayers.Geometry.LineString(points),
+                    //   {route: idx == 0 ? 'main' : 'sub'});
+                    // vectorLayer.addFeatures([feature]);
+                    if (drawFeature) {
+                      map.removeControl(drawFeature);
+                      drawFeature.deactivate();
+                      drawFeature = undefined
+                    }
+                  })
+                  data.push([distance, feature_routes])
+                });
+                route_selection = Ext.getCmp("route_selection");
+                route_selection.enable();
+                var store = new Ext.data.SimpleStore({
+                  fields: ['route', 'value'],
+                  data: data
+                })
+                route_selection.bindStore(store);
+                route_selection.setValue(data[0]);
+              },{decodeLine: decodeLine})
+            });
+          }
+        },{
+          text: 'ยกเลิก',
+          handler: function() {
+            if (drawFeature) {
+              map.removeControl(drawFeature);
+              drawFeature.deactivate();
+              drawFeature = undefined
+            }
+            vectorLayer.removeFeatures(
+              _.select(vectorLayer.features, function(f){ 
+                return f.data.type == 'direction_start' || f.data.type == 'direction_end'  ||
+                  f.data.route == 'main' || f.data.route == 'sub'
+            }));
+            win.close();
+          }
+        }],
+        listeners: {
+          close: function() {
+            if (drawFeature) {
+              map.removeControl(drawFeature);
+              drawFeature.deactivate();
+              drawFeature = undefined
+
+            }
+            vectorLayer.removeFeatures(
+              _.select(vectorLayer.features, function(f){ 
+                return f.data.type == 'direction_start' || f.data.type == 'direction_end' ||
+                  f.data.route == 'main' || f.data.route == 'sub' 
+            }));
+          }
+        }
+      });
+      win.show();
+      var mapId = map.div.id;
+      win.alignTo(Ext.getDom(mapId), 'tr-tr', [-150, 6]);
+    }
+
+    button = Ext.create('Ext.Button',{
+      tooltip: 'ค้นหาเส้นทาง',
+      iconCls: 'direction',
+      enableToggle: true,
+      handler: function() {
+        showWinDirection(map, vectorLayer);
+      }
+    });
+    toolbarItems.push(button);
+    toolbarItems.push("-");
+    // End Direction
 
     action = Ext.create('GeoExt.Action',{
        tooltip: "Previous view",

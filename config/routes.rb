@@ -17,6 +17,11 @@ Rails.application.routes.draw do
   
   get "home", to: 'home#index', as: :home
 
+  match 'google_direction', 
+          to: 'dsi_respond#google_direction', 
+          as: :google_direction,
+          via: [:get, :post]
+
   match 'process_input', 
           to: 'dsi_respond#process_input', 
           as: :process_input,
