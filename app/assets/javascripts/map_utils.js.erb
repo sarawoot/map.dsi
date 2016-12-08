@@ -294,7 +294,11 @@ create_layer_vectorLayer = function() {
     var curr_loc = feat.geometry.toString();
     Ext.getCmp('no_case').setValue(feature.data.no_case);
     Ext.getCmp('officer').setValue(feature.data.officer);
-    Ext.getCmp('implement_date').setValue(feature.data.implement_date);
+    Ext.getCmp('implement_date').setValue('');
+    if (feature.data.implement_date !== undefined && feature.data.implement_date !== '') {
+      Ext.getCmp('implement_date').setValue(new Date(feature.data.implement_date));  
+    }
+    
     Ext.getCmp('id_location').setValue('');
     Ext.getCmp("projection").setValue('EPSG:4326');
     Ext.getCmp('id_location').setValue(curr_loc);
