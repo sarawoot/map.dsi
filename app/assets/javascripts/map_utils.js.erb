@@ -291,8 +291,10 @@ create_layer_vectorLayer = function() {
     // convert from merc(900913) to gcs(4326)
     var feat = feature.clone();
     feat.geometry.transform(merc, gcs);
-
     var curr_loc = feat.geometry.toString();
+    Ext.getCmp('no_case').setValue(feature.data.no_case);
+    Ext.getCmp('officer').setValue(feature.data.officer);
+    Ext.getCmp('implement_date').setValue(feature.data.implement_date);
     Ext.getCmp('id_location').setValue('');
     Ext.getCmp("projection").setValue('EPSG:4326');
     Ext.getCmp('id_location').setValue(curr_loc);
@@ -318,6 +320,7 @@ create_layer_vectorLayer = function() {
       });
     }
     //popup_vectorLayer.center(); ERROR: popup has no method center ??
+
     popup_vectorLayer.show();
     
   }
@@ -337,13 +340,13 @@ create_layer_vectorLayer = function() {
       {name: "UTM Zone 47", code: "EPSG:32647"},
       {name: "UTM Zone 48", code: "EPSG:32648"},
       {name: "UTM Indian Zone 47", code: "EPSG:24047"},
-      {name: "UTM Indian Zone 47", code: "EPSG:24048"}
+      {name: "UTM Indian Zone 48", code: "EPSG:24048"}
     ]
   });
 
   var combo_projection = Ext.create('Ext.form.field.ComboBox', {
     id: 'projection',
-    fieldLabel: 'Projection',
+    fieldLabel: 'ระบบพิกัด',
     displayField: 'name',
     valueField: "code",
     labelWidth: 50,
@@ -364,6 +367,21 @@ create_layer_vectorLayer = function() {
     }
   });
 
+  function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+      var event = document.createEvent('MouseEvents');
+      event.initEvent('click', true, true);
+      pom.dispatchEvent(event);
+    }
+    else {
+      pom.click();
+    }
+  }  
+
   // Add Popup: define "create_popup_vectorLayer" function + Input Form
   frm_input = Ext.create('Ext.form.Panel', {
     id: 'id_frm_input',
@@ -380,17 +398,24 @@ create_layer_vectorLayer = function() {
     items: [
       {
         xtype: 'textfield',
-        fieldLabel: 'Title',
-        id: 'title',
-        name: 'name'
+        fieldLabel: 'เลขที่คดี',
+        id: 'no_case',
+        name: 'no_case'
       }, {
-        xtype: 'textareafield',
-        fieldLabel: 'Description',
-        name: 'description',
-        id: 'description'
+        xtype: 'textfield',
+        fieldLabel: 'เจ้าหน้าที่รับผิดชอบ',
+        id: 'officer',
+        name: 'officer'
+      }, {
+        xtype: 'datefield',
+        fieldLabel: 'วันที่ดำเนินการ',
+        id: 'implement_date',
+        name: 'implement_date',
+        format: 'd/m/Y'
       }, combo_projection, {
         xtype: 'textareafield'
         ,fieldLabel: 'Location'
+        ,fieldLabel: 'พื้นที่เกิดเหตุ'
         ,name: 'location'
         ,id: 'id_location'
       }
@@ -399,62 +424,60 @@ create_layer_vectorLayer = function() {
       {
         text: 'Save',
         handler: function() {
+          if (Ext.getCmp('no_case').getValue().trim() == '') {
+            alert('กรุณากรอกข้อมูลให้ครบถ้วน')
+            return false;
+          }
           data = {
-            title: Ext.getCmp("title").getValue(),
-            description: Ext.getCmp("description").getValue(),
-            wkt: Ext.getCmp("id_location").getValue(),
-            projection: Ext.getCmp("projection").getValue()
+            name: Ext.getCmp('no_case').getValue(),
+            no_case: Ext.getCmp('no_case').getValue(),
+            officer: Ext.getCmp('officer').getValue(),
+            implement_date: Ext.getCmp('implement_date').getValue(),
+            id_location: Ext.getCmp('id_location').getValue(),
+            projection: Ext.getCmp('projection').getValue()
+          }
+          if (data.implement_date != '') {
+            data.implement_date = data.implement_date.toDateString()
           }
           current_feature_popup.attributes = data;
           current_feature_popup.data = data;
-          var kml = new OpenLayers.Format.KML();
-          // kml.write(current_feature_popup)
-
-          debugger
-
-          // current_feature_popup
-          // frm_input.getForm().submit({
-          //   success: function(f,a) {
-          //     Ext.Msg.show({
-          //       title: 'Info'
-          //       ,msg: '1 feature added!'
-          //       ,buttons: Ext.Msg.OK
-          //       ,icon: Ext.Msg.INFO
-          //       ,fn: function(btn) {
-          //         // Remove all features
-          //         // Reset input form
-          //         // Hide popup
-          //         // Refresh pointLayer
-          //         vectorLayer.removeAllFeatures();
-          //         frm_input.getForm().reset();
-          //         popup_vectorLayer.hide();
-          //         // Update new feature in pointLayer ?? better solution ??
-          //         if (pointLayer) {
-          //           map.removeLayer(pointLayer);
-          //           map.removeControl(ctrl_popup_pointLayer);
-          //           pointLayer = null;
-          //           ctrl_popup_pointLayer = null;
-          //         }
-          //         create_layer_pointLayer();
-          //         map.addLayer(pointLayer);
-          //         frm_input_ctrl.deactivate();
-          //       }
-          //     });
-          //   }
-          //   ,failure: function(f,a) {
-          //     Ext.Msg.alert('Error', 'Failed!!');
-          //   }
-          // })
+          popup_vectorLayer.close(); 
         }
-      },{
+      }, {
+        text: 'Download',
+        handler: function() {
+          if (Ext.getCmp('no_case').getValue().trim() == '') {
+            alert('กรุณากรอกข้อมูลให้ครบถ้วน')
+            return false;
+          }
+          data = {
+            name: Ext.getCmp('no_case').getValue(),
+            no_case: Ext.getCmp('no_case').getValue(),
+            officer: Ext.getCmp('officer').getValue(),
+            implement_date: Ext.getCmp('implement_date').getValue(),
+            id_location: Ext.getCmp('id_location').getValue(),
+            projection: Ext.getCmp('projection').getValue()
+          }
+          if (data.implement_date != '') {
+            data.implement_date = data.implement_date.toDateString()
+          }
+          current_feature_popup.attributes = data;
+          current_feature_popup.data = data;
+          
+          var feature = current_feature_popup.clone();
+          feature.geometry.transform(merc, gcs);
+          var kml = new OpenLayers.Format.KML({
+            foldersName: Ext.getCmp('no_case').getValue()
+          });
+          var str = kml.write(feature);
+
+          download(Ext.getCmp('no_case').getValue()+'.kml', str);
+        }
+      }, {
         text: 'Cancel',
         handler: function() {
-          var o = Ext.getCmp('id_location');
-          // Remember current location
-          var curr_loc = o.getValue();
           frm_input.getForm().reset();
-          // Set current location back to form
-          o.setValue(curr_loc);
+          popup_vectorLayer.close()
         }
       }
     ]
@@ -2097,6 +2120,65 @@ var loadxls = Ext.create("Ext.form.Panel",{
             create_layer_kml(kmlname);
           }
         })
+      }
+    }
+  },{
+    text: 'Reset',
+    handler: function() {
+      this.up('form').getForm().reset();
+    }
+  }]
+});
+
+var loadkml = Ext.create("Ext.form.Panel",{
+  id: 'id_loadkml'
+  ,width: 500
+  ,frame: true
+  ,title: 'Upload KML'
+  ,bodyPadding: '10 10 0'
+  ,defaults: {
+    anchor: '100%'
+    ,xtype: 'textfield'
+    ,msgTarget: 'side'
+    ,labelWidth: 50
+  }
+  ,items: [{
+    xtype: 'filefield'
+    ,name: 'file'
+    ,id: 'id_file_kml'
+    ,fieldLabel: 'KML'
+    ,labelWidth: 50
+    ,msgTarget: 'side'
+    ,allowBlank: false
+    ,buttonText: ''
+    ,buttonConfig: {
+      iconCls: 'upload'
+    }
+  }]
+  ,buttons: [{
+    text: 'Upload'
+    ,handler: function() {
+      var form = this.up('form').getForm();
+      if (form.isValid()) {
+        var file = Ext.getCmp('id_file_kml').getEl().down('input[type=file]').dom.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var kml_str = reader.result;
+          var kml_format = new OpenLayers.Format.KML()
+          features = kml_format.read(kml_str);
+          _.each(features, function(feature) {
+            feature.geometry.transform(gcs,merc);
+            _.each(_.keys(feature.data), function(key) {
+              feature.data[key] = feature.data[key]['value'];
+            })
+            if (feature.data.implement_date != '') {
+              feature.data.implement_date = new Date(feature.data.implement_date);
+            }
+            feature.attributes = feature.data;
+          });
+          vectorLayer.addFeatures(features);
+        }
+        reader.readAsText(file);
       }
     }
   },{
