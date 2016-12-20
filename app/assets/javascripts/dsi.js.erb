@@ -109,23 +109,11 @@ Ext.application({
       tooltip: 'ไปยังตำแหน่งปัจจุบัน',
       iconCls: 'my_location',
       handler: function(){
-        Ext.Ajax.request({
-          url: Routes.get_lonlat_from_ip_path()
-          ,params: {
-            method: 'GET'
-            ,format: 'json'
-          }
-          ,failure: function(response, opts){
-            alert("get_lonlat_from_ip.rb > failure");
-            return false;
-          }
-          ,success: function(response, opts){
-            // var data = eval( '(' + response.responseText + ')' );
-            // No response from IE
-            var data = Ext.decode(response.responseText);
-            var lon = parseFloat(data.lon);
-            var lat = parseFloat(data.lat);
 
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position){
+            var lon = position.coords.longitude;
+            var lat = position.coords.latitude;
             var p1 = new OpenLayers.LonLat(lon,lat);
             p2 = p1.transform(gcs,merc);
             map.setCenter(p2, 8);
@@ -134,8 +122,38 @@ Ext.application({
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
             var icon = new OpenLayers.Icon(asset_prefix+'/my_locationx.png', size, offset);
             markers.addMarker(new OpenLayers.Marker(p2,icon));
-          }
-        });
+
+          });
+        } else {
+          alert("Browser ไม่สนับสนุนฟังก์ชั่นนี้");
+        }
+        // Ext.Ajax.request({
+        //   url: Routes.get_lonlat_from_ip_path()
+        //   ,params: {
+        //     method: 'GET'
+        //     ,format: 'json'
+        //   }
+        //   ,failure: function(response, opts){
+        //     alert("get_lonlat_from_ip.rb > failure");
+        //     return false;
+        //   }
+        //   ,success: function(response, opts){
+        //     // var data = eval( '(' + response.responseText + ')' );
+        //     // No response from IE
+        //     var data = Ext.decode(response.responseText);
+        //     var lon = parseFloat(data.lon);
+        //     var lat = parseFloat(data.lat);
+
+        //     var p1 = new OpenLayers.LonLat(lon,lat);
+        //     p2 = p1.transform(gcs,merc);
+        //     map.setCenter(p2, 8);
+
+        //     var size = new OpenLayers.Size(48,48);
+        //     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+        //     var icon = new OpenLayers.Icon(asset_prefix+'/my_locationx.png', size, offset);
+        //     markers.addMarker(new OpenLayers.Marker(p2,icon));
+        //   }
+        // });
       },
       allowDepress: false
     });
@@ -516,11 +534,30 @@ Ext.application({
       eventListeners: {
         measure: function(evt) {
           //evt.units --> 'km' , 'm'
-          var unit = (evt.units == 'km') ? 'ตารางกิโลเมตร' : 'ตารางเมตร';
-
+          // var unit = (evt.units == 'km') ? 'ตารางกิโลเมตร' : 'ตารางเมตร';
+          str = ""
+          var area = evt.measure.toFixed(2);
+          // console.log(area)
+          // console.log(evt.units)
+          if (evt.units == 'km') {
+            area = area*1000;
+          }
+          // console.log(area)
+          var rai = Math.floor(area/1600)
+          var nang = Math.floor((area%1600)/400)
+          var wa =  ((area%1600)%400)/4
+          if (rai > 0) {
+            str += " "+numberWithCommas(rai)+" ไร่"
+          }
+          if (nang > 0) {
+            str += " "+numberWithCommas(nang.toFixed(2))+" งาน"
+          }
+          if (wa > 0) {
+            str += " "+numberWithCommas(wa.toFixed(2))+" วา"
+          }
           Ext.Msg.show({
             title: 'Result'
-            ,msg: "พื้นที่รวม ประมาณ " + numberWithCommas(evt.measure.toFixed(2)) + ' ' + unit
+            ,msg: "พื้นที่รวม ประมาณ " + str
             ,buttons: Ext.Msg.OK
             ,icon: Ext.Msg.INFO
           });
