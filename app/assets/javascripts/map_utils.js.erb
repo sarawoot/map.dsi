@@ -253,6 +253,13 @@ create_layer_vectorLayer = function() {
     }
   });
 
+  snap = new OpenLayers.Control.Snapping({
+    layer: vectorLayer,
+    targets: [vectorLayer],
+    greedy: false
+  })
+  snap.activate()
+
   // Add iframe for i2 here
 
   function create_iframe_for_i2(feature) {
@@ -2168,7 +2175,7 @@ var loadkml = Ext.create("Ext.form.Panel",{
         var reader = new FileReader();
         reader.onload = function(e) {
           var kml_str = reader.result;
-          var kml_format = new OpenLayers.Format.KML()
+          var kml_format = new OpenLayers.Format.KML();
           features = kml_format.read(kml_str);
           _.each(features, function(feature) {
             feature.geometry.transform(gcs,merc);
@@ -2181,6 +2188,7 @@ var loadkml = Ext.create("Ext.form.Panel",{
             feature.attributes = feature.data;
           });
           vectorLayer.addFeatures(features);
+          map.zoomToExtent(vectorLayer.getDataExtent());
         }
         reader.readAsText(file);
       }

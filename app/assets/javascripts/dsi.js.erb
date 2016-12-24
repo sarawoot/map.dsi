@@ -116,13 +116,12 @@ Ext.application({
             var lat = position.coords.latitude;
             var p1 = new OpenLayers.LonLat(lon,lat);
             p2 = p1.transform(gcs,merc);
-            map.setCenter(p2, 8);
+            map.setCenter(p2, 18);
 
             var size = new OpenLayers.Size(48,48);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
             var icon = new OpenLayers.Icon(asset_prefix+'/my_locationx.png', size, offset);
             markers.addMarker(new OpenLayers.Marker(p2,icon));
-
           });
         } else {
           alert("Browser ไม่สนับสนุนฟังก์ชั่นนี้");
@@ -419,7 +418,7 @@ Ext.application({
     });
     toolbarItems.push(Ext.create('Ext.button.Button', action));
 
-    toolbarItems.push("-");
+    // toolbarItems.push("-");
 
     // Add Input Form 05/08/2012
     if(username){
@@ -492,97 +491,72 @@ Ext.application({
     toolbarItems.push("-");
 
     // Measure Length control
-    ctrl_measure_length = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-      persist: true
-      ,geodesic: true
-      ,displaySystem: 'metric'
-      ,eventListeners: {
-        measure: function(evt) {
-          //evt.units --> 'km' , 'm'
-          var unit = (evt.units == 'km') ? 'กิโลเมตร' : 'เมตร';
 
-          Ext.Msg.show({
-            title: 'Result'
-            ,msg: "ระยะทางรวม ประมาณ " + numberWithCommas(evt.measure.toFixed(2)) + ' ' + unit
-            ,buttons: Ext.Msg.OK
-            ,icon: Ext.Msg.INFO
-          });
+    action = Ext.create('GeoExt.Action',{
+      control: new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path, {
+        eventListeners: {
+          featureadded: function(feature) {
+            length = feature.feature.geometry.getLength().toFixed(2);
+            if (length >= 1000) {
+              length = "ระยะทางรวม ประมาณ " + (length/1000).toFixed(2) + ' กิโลเมตร' ;
+            } else {
+              length = "ระยะทางรวม ประมาณ " + length + ' เมตร' ;
+            }
+              
+            Ext.Msg.show({
+              title: 'Result'
+              ,msg: length
+              ,buttons: Ext.Msg.OK
+              ,icon: Ext.Msg.INFO
+            });
+
+          }
         }
-      }
-    });
-    map.addControl(ctrl_measure_length);
-
-    var btn_measure_length = new Ext.Button({
+      }),
+      tooltip: 'วัดระยะทาง',
+      map: map,
       iconCls: 'measure_length',
-      tooltip: "วัดระยะทาง",
-      enableToggle: false,
-      handler: function(toggled){
-        if (toggled.pressed) {
-          ctrl_measure_area.deactivate();
-          ctrl_measure_length.activate();
-        } else {
-          ctrl_measure_length.deactivate();
-        }
-      },
-      toggleGroup: "grp_measure",
-      pressed: false
+      toggleGroup: 'map'
     });
-    toolbarItems.push(btn_measure_length);
+    toolbarItems.push(Ext.create('Ext.button.Button', action));
+
 
     // Measure Area control
-    ctrl_measure_area = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-      eventListeners: {
-        measure: function(evt) {
-          //evt.units --> 'km' , 'm'
-          // var unit = (evt.units == 'km') ? 'ตารางกิโลเมตร' : 'ตารางเมตร';
-          str = ""
-          var area = evt.measure.toFixed(2);
-          // console.log(area)
-          // console.log(evt.units)
-          if (evt.units == 'km') {
-            area = area*1000;
-          }
-          // console.log(area)
-          var rai = Math.floor(area/1600)
-          var nang = Math.floor((area%1600)/400)
-          var wa =  ((area%1600)%400)/4
-          if (rai > 0) {
-            str += " "+numberWithCommas(rai)+" ไร่"
-          }
-          if (nang > 0) {
-            str += " "+numberWithCommas(nang.toFixed(2))+" งาน"
-          }
-          if (wa > 0) {
-            str += " "+numberWithCommas(wa.toFixed(2))+" วา"
-          }
-          Ext.Msg.show({
-            title: 'Result'
-            ,msg: "พื้นที่รวม ประมาณ " + str
-            ,buttons: Ext.Msg.OK
-            ,icon: Ext.Msg.INFO
-          });
-        }
-      }
-    });
-    map.addControl(ctrl_measure_area);
 
-    var btn_measure_area = new Ext.Button({
-      iconCls: 'measure_area',
-      tooltip: "คำนวณพื้นที่",
-      enableToggle: false,
-      handler: function(toggled){
-        if (toggled.pressed) {
-          //alert('btn_area: active btn_length: deactivate');
-          ctrl_measure_length.deactivate();
-          ctrl_measure_area.activate();
-        } else {
-          ctrl_measure_area.deactivate();
+    action = Ext.create('GeoExt.Action',{
+      control: new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
+        eventListeners: {
+          featureadded: function(feature) {
+            var area = feature.feature.geometry.getArea().toFixed(2);
+            var str = "";
+            var rai = Math.floor(area/1600)
+            var nang = Math.floor((area%1600)/400)
+            var wa =  ((area%1600)%400)/4
+            if (rai > 0) {
+              str += " "+numberWithCommas(rai)+" ไร่"
+            }
+            if (nang > 0) {
+              str += " "+numberWithCommas(nang.toFixed(2))+" งาน"
+            }
+            if (wa > 0) {
+              str += " "+numberWithCommas(wa.toFixed(2))+" วา"
+            }
+            Ext.Msg.show({
+              title: 'Result'
+              ,msg: "พื้นที่รวม ประมาณ " + str
+              ,buttons: Ext.Msg.OK
+              ,icon: Ext.Msg.INFO
+            });
+          }
         }
-      },
-      toggleGroup: "grp_measure",
-      pressed: false
+      }),
+      tooltip: 'คำนวณพื้นที่',
+      map: map,
+      iconCls: 'measure_area',
+      toggleGroup: 'map'
     });
-    toolbarItems.push(btn_measure_area);
+    toolbarItems.push(Ext.create('Ext.button.Button', action));
+
 
     // Add Lat/Long Button
     var llgrid = null;
@@ -601,7 +575,7 @@ Ext.application({
             displayInLayerSwitcher: false,
             hideInTree: true,
             lineSymbolizer: {
-              strokeColor: "#FFFF7F",
+              strokeColor: "#FFFFFF",
               strokeWidth: 1,
               strokeOpacity: 0.5,
             },
@@ -1130,19 +1104,19 @@ Ext.application({
           })
         }),
 
+        // new OpenLayers.Layer.WMS(
+        //   "ป่าชายเลน ปี 2552",
+        //   "http://map.dsi.go.th/cgi-bin/mapserv",
+        //   {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2552', transparent: true},
+        //   {isBaseLayer: false,visibility: false}
+        // ),
+        // remove 2543 and 2530 by drtoon @ 20161109
         new OpenLayers.Layer.WMS(
-          "ป่าชายเลน ปี 2552",
+          "ป่าชายเลน ปี 2543",
           "http://map.dsi.go.th/cgi-bin/mapserv",
-          {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2552', transparent: true},
+          {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2543', transparent: true},
           {isBaseLayer: false,visibility: false}
         ),
-        // remove 2543 and 2530 by drtoon @ 20161109
-        ////new OpenLayers.Layer.WMS(
-          ////"ป่าชายเลน ปี 2543",
-          ////"http://map.dsi.go.th/cgi-bin/mapserv",
-          ////{map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2543', transparent: true},
-          ////{isBaseLayer: false,visibility: false}
-        ////),
         ////new OpenLayers.Layer.WMS(
           ////"ป่าชายเลน ปี 2530",
           ////"http://map.dsi.go.th/cgi-bin/mapserv",
