@@ -244,7 +244,12 @@ create_layer_vectorLayer = function() {
   vectorLayer.events.on({
     featureselected: function(e) {
       var chk = Ext.getCmp('id_select_feat').pressed;
-      var chki2 = Ext.getCmp('id_select_feati2').pressed;
+      var chki2 = Ext.getCmp('id_select_feati2');
+      if (chki2 == undefined) {
+        chki2 = false;
+      } else {
+        chki2 = chki2.pressed
+      }
       if ((chk == false && chki2 == false) || (chk == true && chki2 == true)) {
         return false;
       } else if (chk) {
@@ -450,7 +455,9 @@ create_layer_vectorLayer = function() {
             id_location: Ext.getCmp('id_location').getValue(),
             projection: Ext.getCmp('projection').getValue()
           }
-          if (data.implement_date != '') {
+          if (data.implement_date != '' &&
+              data.implement_date != null &&
+              data.implement_date != undefined) {
             data.implement_date = data.implement_date.toDateString()
           }
           current_feature_popup.attributes = data;
@@ -472,7 +479,9 @@ create_layer_vectorLayer = function() {
             id_location: Ext.getCmp('id_location').getValue(),
             projection: Ext.getCmp('projection').getValue()
           }
-          if (data.implement_date != '') {
+          if (data.implement_date != '' &&
+              data.implement_date != null &&
+              data.implement_date != undefined) {
             data.implement_date = data.implement_date.toDateString()
           }
           current_feature_popup.attributes = data;
@@ -2205,7 +2214,9 @@ var loadkml = Ext.create("Ext.form.Panel",{
             _.each(_.keys(feature.data), function(key) {
               feature.data[key] = feature.data[key]['value'];
             })
-            if (feature.data.implement_date != '') {
+            if (feature.data.implement_date != '' && 
+                feature.data.implement_date != null && 
+                feature.data.implement_date != undefined) {
               feature.data.implement_date = new Date(feature.data.implement_date);
             }
             feature.attributes = feature.data;
