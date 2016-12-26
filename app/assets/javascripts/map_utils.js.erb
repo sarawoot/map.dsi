@@ -37,7 +37,7 @@ var bing_road, bing_hybrid, bing_aerial;
 var overlay, panel_west, ge;
 var styles, create_styles;
 var v_style, v_style_map, sym_lookup;
-var create_layer_vectorLayer, vectorLayer, frm_input_ctrl, frm_input, popup_vectorLayer;
+var create_layer_vectorLayer, vectorLayer, frm_input_ctrl, frm_input_ctrli2, frm_input, popup_vectorLayer;
 var create_layer_markers, marker, markers, popup_marker;
 var create_layer_hili, hili;
 var create_layer_pointLayer, pointLayer, ctrl_popup_pointLayer, popup_pointLayer, del_feat_ctrl;
@@ -302,6 +302,7 @@ create_layer_vectorLayer = function() {
 
   // Add Popup: create select feature control 05/08/2012
   frm_input_ctrl = new OpenLayers.Control.SelectFeature(vectorLayer);
+  frm_input_ctrli2 = new OpenLayers.Control.SelectFeature(vectorLayer);
   function create_popup_vectorLayer(feature) {
     // convert from merc(900913) to gcs(4326)
     var feat = feature.clone();
@@ -334,6 +335,7 @@ create_layer_vectorLayer = function() {
         close: function() {
           if(OpenLayers.Util.indexOf(vectorLayer.selectedFeatures, this.feature) > -1) {
             frm_input_ctrl.unselect(this.feature);
+            frm_input_ctrli2.unselect(this.feature);
           }
         }
       });
@@ -917,6 +919,7 @@ function onFeatureSelect(feature) {
 
 function onMarkerPopupClose(evt) {
   frm_input_ctrl.unselectAll();
+  frm_input_ctrli2.unselectAll();
 }
 
 function onFeatureUnselect(feature) {
@@ -1204,6 +1207,7 @@ function onFeatureSelect(feature) {
 
 function onMarkerPopupClose(evt) {
   frm_input_ctrl.unselectAll();
+  frm_input_ctrli2.unselectAll();
 }
 
 function onFeatureUnselect(feature) {
