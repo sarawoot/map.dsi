@@ -244,12 +244,15 @@ create_layer_vectorLayer = function() {
   vectorLayer.events.on({
     featureselected: function(e) {
       var chk = Ext.getCmp('id_select_feat').pressed;
-      if (chk == false)
+      var chki2 = Ext.getCmp('id_select_feati2').pressed;
+      if ((chk == false && chki2 == false) || (chk == true && chki2 == true)) {
         return false;
-      else
+      } else if (chk) {
         create_popup_vectorLayer(e.feature);
         current_feature_popup = e.feature;
-        // create_iframe_for_i2(e.feature);
+      } else if (chki2) {
+        create_iframe_for_i2(e.feature);
+      }
     }
   });
 
