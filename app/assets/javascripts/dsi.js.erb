@@ -522,40 +522,67 @@ Ext.application({
 
 
     // Measure Area control
+    var calcArea = function(feature) {
+      var area = feature.geometry.getArea().toFixed(2);
+      var str = "";
+      var rai = Math.floor(area/1600)
+      var nang = Math.floor((area%1600)/400)
+      var wa =  ((area%1600)%400)/4
+      if (rai > 0) {
+        str += " "+numberWithCommas(rai)+" ไร่"
+      }
+      if (nang > 0) {
+        str += " "+numberWithCommas(nang.toFixed(2))+" งาน"
+      }
+      if (wa > 0) {
+        str += " "+numberWithCommas(wa.toFixed(2))+" วา"
+      }
+      Ext.Msg.show({
+        title: 'Result'
+        ,msg: "พื้นที่รวม ประมาณ " + str
+        ,buttons: Ext.Msg.OK
+        ,icon: Ext.Msg.INFO
+      });
+    }
+    var ctrl_measure_area = new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
+      eventListeners: {
+        featureadded: function(feature) {
+          calcArea(feature.feature);
+        }
+      }
+    });
+    map.addControl(ctrl_measure_area);
+    btn = Ext.create('Ext.button.Button', {
+      tooltip: 'คำนวณพื้นที่',
+      iconCls: 'measure_area',
+      toggleGroup: 'map',
+      listeners: {
+        toggle: function(e) {
 
-    action = Ext.create('GeoExt.Action',{
-      control: new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
-        eventListeners: {
-          featureadded: function(feature) {
-            var area = feature.feature.geometry.getArea().toFixed(2);
-            var str = "";
-            var rai = Math.floor(area/1600)
-            var nang = Math.floor((area%1600)/400)
-            var wa =  ((area%1600)%400)/4
-            if (rai > 0) {
-              str += " "+numberWithCommas(rai)+" ไร่"
-            }
-            if (nang > 0) {
-              str += " "+numberWithCommas(nang.toFixed(2))+" งาน"
-            }
-            if (wa > 0) {
-              str += " "+numberWithCommas(wa.toFixed(2))+" วา"
-            }
-            Ext.Msg.show({
-              title: 'Result'
-              ,msg: "พื้นที่รวม ประมาณ " + str
-              ,buttons: Ext.Msg.OK
-              ,icon: Ext.Msg.INFO
-            });
+          if (e.pressed) {
+            var points = [];
+            _.each(vectorLayer.features, function(feature) {
+              if (feature.data.type == 'gps' &&
+                  feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.Point') {
+                points.push(feature.geometry);
+              }
+            })
+            
+            if (points.length > 2) {
+              var ring = new OpenLayers.Geometry.LinearRing(points);
+              var polygon = new OpenLayers.Geometry.Polygon([ring]);
+              var feature = new OpenLayers.Feature.Vector(polygon)
+              vectorLayer.addFeatures([feature]);
+              calcArea(feature);
+            } 
+            ctrl_measure_area.activate();
+          } else {
+            ctrl_measure_area.deactivate()
           }
         }
-      }),
-      tooltip: 'คำนวณพื้นที่',
-      map: map,
-      iconCls: 'measure_area',
-      toggleGroup: 'map'
+      }
     });
-    toolbarItems.push(Ext.create('Ext.button.Button', action));
+    toolbarItems.push(btn);
 
 
     // Add Lat/Long Button

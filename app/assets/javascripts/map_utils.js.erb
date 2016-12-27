@@ -91,6 +91,22 @@ create_styles = function() {
           filter: new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: "type",
+            value: 'gps'
+          }),
+          symbolizer: {
+            "Point": {
+              externalGraphic: asset_prefix+'/icon_marker.png',
+              pointRadius: 20,
+              fillOpacity: 1,
+              strokeOpacity: 1,
+              graphicYOffset: -40,
+            }
+          }
+        }),
+        new OpenLayers.Rule({
+          filter: new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "type",
             value: 'direction_start'
           }),
           symbolizer: {
@@ -1322,16 +1338,17 @@ var gps_report = function(lon,lat) {
       var p2 = p1.transform(gcs,merc);
       map.setCenter(p2, 14);
 
-      var size = new OpenLayers.Size(48,48);
-      var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-      var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
-      markers.addMarker(new OpenLayers.Marker(p2,icon));
+      // var size = new OpenLayers.Size(48,48);
+      // var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+      // var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
+      // markers.addMarker(new OpenLayers.Marker(p2,icon));
 
       var point = new OpenLayers.Geometry.Point(lon, lat);
       point.transform(gcs,merc)
       var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
+      pointFeature.attributes.type = 'gps';
+      pointFeature.data.type = 'gps';
       vectorLayer.addFeatures([pointFeature]);
-
       info('Result',gps_msg);
     }
   });
@@ -1629,15 +1646,17 @@ var report_utm = function(utmn, utme, zone) {
       var p2 = p1.transform(gcs,merc);
       map.setCenter(p2, 14);
 
-      var size = new OpenLayers.Size(48,48);
-      var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-      var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
-      markers.addMarker(new OpenLayers.Marker(p2,icon));
+      // var size = new OpenLayers.Size(48,48);
+      // var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+      // var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
+      // markers.addMarker(new OpenLayers.Marker(p2,icon));
 
 
       var point = new OpenLayers.Geometry.Point(lon, lat);
       point.transform(gcs,merc)
       var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
+      pointFeature.attributes.type = 'gps';
+      pointFeature.data.type = 'gps';
       vectorLayer.addFeatures([pointFeature]);
 
 
@@ -1685,14 +1704,16 @@ var report_utm_indian = function(utmni, utmei, zonei) {
       var p2 = p1.transform(gcs,merc);
       map.setCenter(p2, 14);
 
-      var size = new OpenLayers.Size(48,48);
-      var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-      var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
-      markers.addMarker(new OpenLayers.Marker(p2,icon));
+      // var size = new OpenLayers.Size(48,48);
+      // var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+      // var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
+      // markers.addMarker(new OpenLayers.Marker(p2,icon));
 
       var point = new OpenLayers.Geometry.Point(lon, lat);
       point.transform(gcs,merc)
       var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
+      pointFeature.attributes.type = 'gps';
+      pointFeature.data.type = 'gps';
       vectorLayer.addFeatures([pointFeature]);
 
       info('Result', data.msg);
