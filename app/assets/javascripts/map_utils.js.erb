@@ -1310,6 +1310,12 @@ var gps_report = function(lon,lat) {
       var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
       var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
       markers.addMarker(new OpenLayers.Marker(p2,icon));
+
+      var point = new OpenLayers.Geometry.Point(lon, lat);
+      point.transform(gcs,merc)
+      var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
+      vectorLayer.addFeatures([pointFeature]);
+
       info('Result',gps_msg);
     }
   });
@@ -1611,6 +1617,14 @@ var report_utm = function(utmn, utme, zone) {
       var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
       var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
       markers.addMarker(new OpenLayers.Marker(p2,icon));
+
+
+      var point = new OpenLayers.Geometry.Point(lon, lat);
+      point.transform(gcs,merc)
+      var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
+      vectorLayer.addFeatures([pointFeature]);
+
+
       info('Result', data.msg);
     }
   });
@@ -1659,6 +1673,12 @@ var report_utm_indian = function(utmni, utmei, zonei) {
       var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
       var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
       markers.addMarker(new OpenLayers.Marker(p2,icon));
+
+      var point = new OpenLayers.Geometry.Point(lon, lat);
+      point.transform(gcs,merc)
+      var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
+      vectorLayer.addFeatures([pointFeature]);
+
       info('Result', data.msg);
     }
   });
