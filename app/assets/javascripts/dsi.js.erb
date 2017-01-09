@@ -51,11 +51,11 @@ Ext.application({
       projection: new OpenLayers.Projection("EPSG:900913"),
       displayProjection: new OpenLayers.Projection("EPSG:4326"),
       units: "m",
-      maxResolution: 156543.0339,
-      maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,20037508.34, 20037508.34),
+      // maxResolution: 156543.0339,
+      // maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,20037508.34, 20037508.34),
       controls: [
         new OpenLayers.Control.PanZoomBar(),
-        new OpenLayers.Control.MousePosition(),
+        new OpenLayers.Control.MousePosition({displayProjection: new OpenLayers.Projection("EPSG:24047")}),
         new OpenLayers.Control.Navigation(),
         new OpenLayers.Control.LayerSwitcher(),
         new OpenLayers.Control.OverviewMap(),
@@ -467,7 +467,7 @@ Ext.application({
         }
       }
     });
-    toolbarItems.push(btn_custom_layer);
+    // toolbarItems.push(btn_custom_layer);
 
     // Add button to delete a feature from pointLayer and kml table in dsi database
     var btn_del_feat = new Ext.Button({
@@ -486,7 +486,7 @@ Ext.application({
       toggleGroup: "map",
       pressed: false
     });
-    toolbarItems.push(btn_del_feat);
+    // toolbarItems.push(btn_del_feat);
 
     toolbarItems.push("-");
 
@@ -1247,6 +1247,7 @@ Ext.application({
       dockedItems: [{
         xtype: 'toolbar',
         dock: 'top',
+        cls: 'dsi-toolbar',
         items: toolbarItems
       }]
     });
@@ -1310,7 +1311,7 @@ Ext.application({
       split: true,
       layout: 'accordion',
       items: [
-        tree,gps2,gps_utm,gps_utm_indian,searchquery,loadxls,loadkml
+        tree,gps2,gps_utm,gps_utm_indian,searchquery,loadkml
       ], 
       listeners: {
         render: {

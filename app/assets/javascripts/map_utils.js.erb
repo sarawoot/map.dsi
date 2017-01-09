@@ -135,7 +135,6 @@ create_styles = function() {
             }
           }
         }),
-
         new OpenLayers.Rule({
           filter: new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
@@ -165,23 +164,41 @@ create_styles = function() {
           }
         }),
         new OpenLayers.Rule({
+          filter: new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "type",
+            value: 'upload-kml'
+          }),
+          symbolizer: {
+            pointRadius: 5,
+            graphicName: "circle",
+            strokeWidth: 3,
+            strokeOpacity: 1,
+            fillOpacity: 0,
+            strokeOpacity: 1,
+            fillColor: "#6666aa",
+            strokeColor: "#2222aa"
+          }
+        }),
+        new OpenLayers.Rule({
           elseFilter: true,
           symbolizer: {
             "Point": {
               pointRadius: 5,
               graphicName: "square",
               fillColor: "#EC940C",
-              fillOpacity: 0.75,
+              fillOpacity: 0.25,
               strokeWidth: 1,
               strokeOpacity: 1,
               strokeColor: "#3333aa"
             },
             "Line": {
-              strokeWidth: 2,
+              strokeWidth: 3,
               strokeOpacity: 1,
               strokeColor: "#006600"
             },
             "Polygon": {
+              fillOpacity: 0.2,
               strokeWidth: 2,
               strokeOpacity: 1,
               fillColor: "#6666aa",
@@ -1240,31 +1257,31 @@ var test_gps2 = function() {
   var gps_test_lon;
   var gps_test_lat;
 
-  gps_format += 1
-  if (gps_format == 1)
-  {
-    gps_test_lon = "100.56578";
-    gps_test_lat = "13.89072";
-  }
-  else if (gps_format == 2)
-  {
-    gps_test_lon = "100 33 56.808";
-    gps_test_lat = "13 53 26.592";
-  }
-  else if (gps_format == 3)
-  {
-    gps_test_lon = "100d 33m 56.808s";
-    gps_test_lat = "13d 53m 26.592s";
-  }
-  else if (gps_format == 4)
-  {
-    gps_format = 0;
-    gps_test_lon = "100DD 33MM 56.808SS";
-    gps_test_lat = "13DD 53MM 26.592SS";
-  }
+  // gps_format += 1
+  // if (gps_format == 1)
+  // {
+  //   gps_test_lon = "100.56578";
+  //   gps_test_lat = "13.89072";
+  // }
+  // else if (gps_format == 2)
+  // {
+  //   gps_test_lon = "100 33 56.808";
+  //   gps_test_lat = "13 53 26.592";
+  // }
+  // else if (gps_format == 3)
+  // {
+  //   gps_test_lon = "100d 33m 56.808s";
+  //   gps_test_lat = "13d 53m 26.592s";
+  // }
+  // else if (gps_format == 4)
+  // {
+  //   gps_format = 0;
+  //   gps_test_lon = "100DD 33MM 56.808SS";
+  //   gps_test_lat = "13DD 53MM 26.592SS";
+  // }
 
-  Ext.getCmp('gps_lon').setValue(gps_test_lon);
-  Ext.getCmp('gps_lat').setValue(gps_test_lat);
+  Ext.getCmp('gps_lon').setValue(100.565796);
+  Ext.getCmp('gps_lat').setValue(13.890726);
 }
 
 //Add squeeze prototype
@@ -1492,12 +1509,12 @@ var report_utm = function(utmn, utme, zone) {
 };
 
 var test_gps_utm = function(){
-  if (Ext.getCmp('zone47').checked) {
-    Ext.getCmp('utmn').setValue(1536195.1807);
-    Ext.getCmp('utme').setValue(669189.2284);
-  } else {
-    Ext.getCmp('utmn').setValue(1540101.0761);
-    Ext.getCmp('utme').setValue(20494.2993);
+  if (Ext.getCmp('zone47').checked) { 
+    Ext.getCmp('utmn').setValue(1536196.3268934868);
+    Ext.getCmp('utme').setValue(669189.8739711897);
+  } else { 
+    Ext.getCmp('utmn').setValue(1540102.2084699962);
+    Ext.getCmp('utme').setValue(20494.975820274034);
   }
 }
 
@@ -1723,11 +1740,12 @@ var report_utm_indian = function(utmni, utmei, zonei) {
 
 var test_gps_utm_indian = function(){
   if (Ext.getCmp('zone47i').checked) {
-    Ext.getCmp('utmni').setValue(1535891.7973);
-    Ext.getCmp('utmei').setValue(669523.2828);
+
+    Ext.getCmp('utmni').setValue(1536196.19472);
+    Ext.getCmp('utmei').setValue(669189.66298);
   } else {
-    Ext.getCmp('utmni').setValue(1539787.7522);
-    Ext.getCmp('utmei').setValue(20913.1788);
+    Ext.getCmp('utmni').setValue(1540102.32);
+    Ext.getCmp('utmei').setValue(20495.43991534739);
   }
 }
 
@@ -2238,12 +2256,14 @@ var loadkml = Ext.create("Ext.form.Panel",{
             feature.geometry.transform(gcs,merc);
             _.each(_.keys(feature.data), function(key) {
               feature.data[key] = feature.data[key]['value'];
+
             })
             if (feature.data.implement_date != '' && 
                 feature.data.implement_date != null && 
                 feature.data.implement_date != undefined) {
               feature.data.implement_date = new Date(feature.data.implement_date);
             }
+            feature.data.type='upload-kml'
             feature.attributes = feature.data;
           });
           vectorLayer.addFeatures(features);
