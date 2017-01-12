@@ -1,6 +1,22 @@
+// .dsi-toolbar div {
+//   background-color: white !important;
+// }
+
 .dsi-toolbar div {
   background-color: white !important;
+  height: 28px !important;
 }
+
+.x-btn button .x-btn-icon, .x-btn a .x-btn-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.x-btn-default-toolbar-small-icon button {
+  width: 24px !important;
+  height: 24px !important;
+}
+
 .logo {
   text-align: right;
   margin-right: 10px;
@@ -62,141 +78,176 @@ div.olLayerGoogleCopyright {
 
 .zoomfull {
   background-image: image-url("001.png") !important;
+  background-size: 24px 24px;
 }
 
 .my_location {
   background-image: image-url("012.png") !important;
+  background-size: 24px 24px;
 }
 
 .zoomin {
   background-image: image-url("002.png") !important;
+  background-size: 24px 24px;
 }
 
 .zoomout {
   background-image: image-url("003.png") !important;
+  background-size: 24px 24px;
 }
 
 .pan {
   background-image: image-url("004.png") !important;
+  background-size: 24px 24px;
 }
 
 .drawpoint {
   background-image: image-url("006.png") !important;
+  background-size: 24px 24px;
 }
 
 .drawline {
   background-image: image-url("007.png") !important;
+  background-size: 24px 24px;
 }
 
 .drawpolygon {
   background-image: image-url("008.png") !important;
+  background-size: 24px 24px;
 }
 
 .modifyfeature {
   background-image: image-url("009.png") !important;
+  background-size: 24px 24px;
 }
 
 .deletefeature {
   background-image: image-url("010.png") !important;
+  background-size: 24px 24px;
 }
 
 .deleteallfeature {
   background-image: image-url("011.png") !important;
+  background-size: 24px 24px;
 }
 
 .info {
-  background-image: image-url("icon_info.png") !important;
+  background-image: image-url("014.png") !important;
+  background-size: 24px 24px;
 }
 
 .i2 {
   background-image: image-url("icon_i2.png") !important;
+  background-size: 24px 24px;
 }
 
 .back {
   background-image: image-url("resultset_previous.png") !important;
+  background-size: 24px 24px;
 }
 
 .next {
   background-image: image-url("resultset_next.png") !important;
+  background-size: 24px 24px;
 }
 
 .show_gsv {
-  background-image: image-url("017.png") !important;
+  background-image: image-url("013.png") !important;
+  background-size: 24px 24px;
 }
 
 .bing {
   background-image: image-url("icon_bing.png") !important;
+  background-size: 24px 24px;
 }
 
 .google {
   background-image: image-url("icon_google.png") !important;
+  background-size: 24px 24px;
 }
 
 .google_earth {
   background-image: image-url("icon_google_earth.png") !important;
+  background-size: 24px 24px;
 }
 
 .grid1 {
   background-image: image-url("018.png") !important;
+  background-size: 24px 24px;
 }
 
 .grid2 {
   background-image: image-url("019.png") !important;
+  background-size: 24px 24px;
 }
 
 .direction {
-  background-image: image-url("icon-direction.png") !important;
+  background-image: image-url("020.png") !important;
+  background-size: 24px 24px;
 }
 
 .dem {
   background-image: image-url("icon_dem.png") !important;
+  background-size: 24px 24px;
 }
 
 .changwat {
   background-image: image-url("icon_changwat.png") !important;
+  background-size: 24px 24px;
 }
 
 .amphur {
   background-image: image-url("icon_amphur.png") !important;
+  background-size: 24px 24px;
 }
 
 .tambon {
   background-image: image-url("icon_tambon.png") !important;
+  background-size: 24px 24px;
 }
 
 .village {
   background-image: image-url("icon_village.png") !important;
+  background-size: 24px 24px;
 }
 
 .rforest {
   background-image: image-url("icon_rforest.png") !important;
+  background-size: 24px 24px;
 }
 
 .npark {
   background-image: image-url("icon_npark.png") !important;
+  background-size: 24px 24px;
 }
 
 .measure_length {
   background-image: image-url("016.png") !important;
+  background-size: 24px 24px;
 }
 .measure_area {
-  background-image: image-url("icon_measure_area.png") !important;
+  background-image: image-url("017.png") !important;
+  background-size: 24px 24px;
 }
 
 .print_preview {
   background-image: image-url("icon_print_preview.png") !important;
+  background-size: 24px 24px;
 }
 
 .print {
   background-image: image-url("icon_print.png") !important;
+  background-size: 24px 24px;
 }
 
 .select_feat {
   background-image: image-url("icon_select.gif") !important;
+  background-size: 24px 24px;
 }
 
 .close {
   background-image: image-url("icon_close.png") !important;
+  background-size: 24px 24px;
 }
 
 .upload {
@@ -205,26 +256,32 @@ div.olLayerGoogleCopyright {
 
 .layer1 {
   background-image: image-url("icon_layer1.png") !important;
+  background-size: 24px 24px;
 }
 
 .layer1_del {
   background-image: image-url("icon_del_layer1.png") !important;
+  background-size: 24px 24px;
 }
 
 .layer2 {
   background-image: image-url("icon_layer2.png") !important;
+  background-size: 24px 24px;
 }
 
 .layer2_del {
   background-image: image-url("icon_del_layer2.png") !important;
+  background-size: 24px 24px;
 }
 
 .del_feature_in_layer {
   background-image: image-url("icon_del_feat.png") !important;
+  background-size: 24px 24px;
 }
 
 .add_layer {
   background-image: image-url("icon_add_layer.png") !important;
+  background-size: 24px 24px;
 }
 
 .del_layer {
@@ -233,10 +290,12 @@ div.olLayerGoogleCopyright {
 
 .draw_number {
   background-image: image-url("icon_draw_number.png") !important;
+  background-size: 24px 24px;
 }
 
 .add_buffer {
   background-image: image-url("005.png") !important;
+  background-size: 24px 24px;
 }
 
 .x-btn-inner {
