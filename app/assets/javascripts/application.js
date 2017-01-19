@@ -1,4 +1,4 @@
-//= require jquery
+//= require jquery-1.7.1.min
 //= require jquery_ujs
 //= require turbolinks
 //= require js-routes
