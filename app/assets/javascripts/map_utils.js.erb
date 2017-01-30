@@ -2241,6 +2241,7 @@ var loadkml = Ext.create("Ext.form.Panel",{
           var kml_str = reader.result;
           var kml_format = new OpenLayers.Format.KML();
           features = kml_format.read(kml_str);
+          stroke_color = getRandomColor();
           _.each(features, function(feature) {
             feature.geometry.transform(gcs,merc);
             feature.style = {
@@ -2251,7 +2252,7 @@ var loadkml = Ext.create("Ext.form.Panel",{
               fillOpacity: 0,
               strokeOpacity: 1,
               fillColor: "#6666aa",
-              strokeColor: getRandomColor()
+              strokeColor: stroke_color
             }
 
             _.each(_.keys(feature.data), function(key) {
