@@ -177,7 +177,7 @@ create_styles = function() {
             fillOpacity: 0,
             strokeOpacity: 1,
             fillColor: "#6666aa",
-            strokeColor: "#2222aa"
+            strokeColor: '${color}'
           }
         }),
         new OpenLayers.Rule({
@@ -344,7 +344,9 @@ create_layer_vectorLayer = function() {
     Ext.getCmp('no_case').setValue(feature.data.no_case);
     Ext.getCmp('officer').setValue(feature.data.officer);
     Ext.getCmp('implement_date').setValue('');
-    if (feature.data.implement_date !== undefined && feature.data.implement_date !== '') {
+    if (feature.data.implement_date !== undefined && 
+        feature.data.implement_date !== '' && 
+        feature.data.implement_date !== null) {
       Ext.getCmp('implement_date').setValue(new Date(feature.data.implement_date));  
     }
     
@@ -502,6 +504,7 @@ create_layer_vectorLayer = function() {
       }, {
         text: 'Download',
         handler: function() {
+
           if (Ext.getCmp('no_case').getValue().trim() == '') {
             alert('กรุณากรอกข้อมูลให้ครบถ้วน')
             return false;
@@ -519,8 +522,12 @@ create_layer_vectorLayer = function() {
               data.implement_date != undefined) {
             data.implement_date = data.implement_date.toDateString()
           }
+          data.type = current_feature_popup.data.type;
+          data_style = current_feature_popup.style;
           current_feature_popup.attributes = data;
           current_feature_popup.data = data;
+          current_feature_popup.style = data_style;
+
           
           var feature = current_feature_popup.clone();
           feature.geometry.transform(merc, gcs);
@@ -528,8 +535,11 @@ create_layer_vectorLayer = function() {
             foldersName: Ext.getCmp('no_case').getValue()
           });
           var str = kml.write(feature);
-
           download(Ext.getCmp('no_case').getValue()+'.kml', str);
+          frm_input_ctrl.unselectAll();
+          popup_vectorLayer.close();
+
+
         }
       }, {
         text: 'Cancel',
@@ -1510,11 +1520,11 @@ var report_utm = function(utmn, utme, zone) {
 
 var test_gps_utm = function(){
   if (Ext.getCmp('zone47').checked) { 
-    Ext.getCmp('utmn').setValue(1536196.3268934868);
-    Ext.getCmp('utme').setValue(669189.8739711897);
+    Ext.getCmp('utmn').setValue(1536196.3057624635);
+    Ext.getCmp('utme').setValue(669189.8779743124);
   } else { 
-    Ext.getCmp('utmn').setValue(1540102.2084699962);
-    Ext.getCmp('utme').setValue(20494.975820274034);
+    Ext.getCmp('utmn').setValue(1540102.1871917767);
+    Ext.getCmp('utme').setValue(20494.979299950704);
   }
 }
 
@@ -1691,61 +1701,31 @@ var check_gps_utm_indian = function(){
   var utmei = Ext.getCmp('utmei').getValue();
   var zone47i = Ext.getCmp('zone47i').checked;
   if (zone47i == true)
-    zonei = '47';
+    zonei = 'EPSG:24047';
   else
-    zonei = '48';
+    zonei = 'EPSG:24048';
   report_utm_indian(utmni, utmei, zonei);
 }
 
 var report_utm_indian = function(utmni, utmei, zonei) {
-  Ext.Ajax.request({
-    url: Routes.checkUTMIndian_path()
-    ,params: {
-      method: 'GET'
-      ,utmn: utmni
-      ,utme: utmei
-      ,zone: zonei
-      ,format: 'json'
-    }
-    ,failure: function(response, opts){
-      alert('checkUTMIndian > failure');
-      return false;
-    }
-    ,success: function(response, opts){
-      var data = Ext.decode(response.responseText);
-      var lon = parseFloat(data.lon);
-      var lat = parseFloat(data.lat);
-      var msg = data.msg;
+  
+  var wkt = new OpenLayers.Format.WKT();
+  var feature = wkt.read("POINT("+utmei+" "+utmni+")");
+  var val = feature.geometry.transform(
+              new OpenLayers.Projection(zonei),
+              new OpenLayers.Projection('EPSG:4326'));
 
-      var p1 = new OpenLayers.LonLat(lon,lat);
-      var p2 = p1.transform(gcs,merc);
-      map.setCenter(p2, 14);
-
-      // var size = new OpenLayers.Size(48,48);
-      // var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-      // var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
-      // markers.addMarker(new OpenLayers.Marker(p2,icon));
-
-      var point = new OpenLayers.Geometry.Point(lon, lat);
-      point.transform(gcs,merc)
-      var pointFeature = new OpenLayers.Feature.Vector(point,null,null);
-      pointFeature.attributes.type = 'gps';
-      pointFeature.data.type = 'gps';
-      vectorLayer.addFeatures([pointFeature]);
-
-      info('Result', data.msg);
-    }
-  });
+  gps_report(val.x,val.y);
+  
 };
 
 var test_gps_utm_indian = function(){
   if (Ext.getCmp('zone47i').checked) {
-
-    Ext.getCmp('utmni').setValue(1536196.19472);
-    Ext.getCmp('utmei').setValue(669189.66298);
+    Ext.getCmp('utmni').setValue(1535893.1404659492);
+    Ext.getCmp('utmei').setValue(669523.6467795508);
   } else {
-    Ext.getCmp('utmni').setValue(1540102.32);
-    Ext.getCmp('utmei').setValue(20495.43991534739);
+    Ext.getCmp('utmni').setValue(1539789.0890515908);
+    Ext.getCmp('utmei').setValue(20913.57799696253);
   }
 }
 
@@ -2216,6 +2196,15 @@ var loadxls = Ext.create("Ext.form.Panel",{
   }]
 });
 
+function getRandomColor() {
+  var letters = '0123456789ABCDEF'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++ ) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 var loadkml = Ext.create("Ext.form.Panel",{
   id: 'id_loadkml'
   ,width: 500
@@ -2254,6 +2243,17 @@ var loadkml = Ext.create("Ext.form.Panel",{
           features = kml_format.read(kml_str);
           _.each(features, function(feature) {
             feature.geometry.transform(gcs,merc);
+            feature.style = {
+              pointRadius: 5,
+              graphicName: "circle",
+              strokeWidth: 3,
+              strokeOpacity: 1,
+              fillOpacity: 0,
+              strokeOpacity: 1,
+              fillColor: "#6666aa",
+              strokeColor: getRandomColor()
+            }
+
             _.each(_.keys(feature.data), function(key) {
               feature.data[key] = feature.data[key]['value'];
 
