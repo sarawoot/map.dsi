@@ -2246,17 +2246,18 @@ var loadkml = Ext.create("Ext.form.Panel",{
           stroke_color = getRandomColor();
           _.each(features, function(feature) {
             feature.geometry.transform(gcs,merc);
-            // feature.style = {
-            //   pointRadius: 5,
-            //   graphicName: "circle",
-            //   strokeWidth: 3,
-            //   strokeOpacity: 1,
-            //   fillOpacity: 0,
-            //   strokeOpacity: 1,
-            //   fillColor: "#6666aa",
-            //   strokeColor: stroke_color
-            // }
-
+            if ($.isEmptyObject(feature.style)) {
+              feature.style = {
+                pointRadius: 5,
+                graphicName: "circle",
+                strokeWidth: 3,
+                strokeOpacity: 1,
+                fillOpacity: 0,
+                strokeOpacity: 1,
+                fillColor: "#6666aa",
+                strokeColor: stroke_color
+              }  
+            }
             _.each(_.keys(feature.data), function(key) {
               feature.data[key] = feature.data[key]['value'];
 
