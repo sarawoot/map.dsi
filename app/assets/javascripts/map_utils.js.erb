@@ -2236,44 +2236,97 @@ var loadkml = Ext.create("Ext.form.Panel",{
       var form = this.up('form').getForm();
       if (form.isValid()) {
         var file = Ext.getCmp('id_file_kml').getEl().down('input[type=file]').dom.files[0];
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          var kml_str = reader.result;
-          var kml_format = new OpenLayers.Format.KML({
-            extractStyles: true
-          });
-          features = kml_format.read(kml_str);
-          stroke_color = getRandomColor();
-          _.each(features, function(feature) {
-            feature.geometry.transform(gcs,merc);
-            if ($.isEmptyObject(feature.style)) {
-              feature.style = {
-                pointRadius: 5,
-                graphicName: "circle",
-                strokeWidth: 3,
-                strokeOpacity: 1,
-                fillOpacity: 0,
-                strokeOpacity: 1,
-                fillColor: "#6666aa",
-                strokeColor: stroke_color
-              }  
-            }
-            _.each(_.keys(feature.data), function(key) {
-              feature.data[key] = feature.data[key]['value'];
+        var ext = file.name.split('.').pop().toLowerCase();
+        if (ext == 'kml') {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var kml_str = reader.result;
+            var kml_format = new OpenLayers.Format.KML({
+              extractStyles: true
+            });
+            features = kml_format.read(kml_str);
+            stroke_color = getRandomColor();
+            _.each(features, function(feature) {
+              feature.geometry.transform(gcs,merc);
+              if ($.isEmptyObject(feature.style)) {
+                feature.style = {
+                  pointRadius: 5,
+                  graphicName: "circle",
+                  strokeWidth: 3,
+                  strokeOpacity: 1,
+                  fillOpacity: 0,
+                  strokeOpacity: 1,
+                  fillColor: "#6666aa",
+                  strokeColor: stroke_color
+                }  
+              }
+              _.each(_.keys(feature.data), function(key) {
+                feature.data[key] = feature.data[key]['value'];
 
-            })
-            if (feature.data.implement_date != '' && 
-                feature.data.implement_date != null && 
-                feature.data.implement_date != undefined) {
-              feature.data.implement_date = new Date(feature.data.implement_date);
-            }
-            feature.data.type='upload-kml'
-            feature.attributes = feature.data;
+              })
+              if (feature.data.implement_date != '' && 
+                  feature.data.implement_date != null && 
+                  feature.data.implement_date != undefined) {
+                feature.data.implement_date = new Date(feature.data.implement_date);
+              }
+              feature.data.type='upload-kml'
+              feature.attributes = feature.data;
+            });
+            vectorLayer.addFeatures(features);
+            map.zoomToExtent(vectorLayer.getDataExtent());
+          }
+          reader.readAsText(file);
+        } else if (ext == 'kmz') {
+
+
+          JSZip.loadAsync(file).then(function(zip) {
+            zip.forEach(function (relativePath, zipEntry) {
+              if (zipEntry.name.split('.').pop().toLowerCase() == 'kml') {
+                zipEntry.async("string").then(function (content) {
+                    
+                  var kml_str = content;
+                  var kml_format = new OpenLayers.Format.KML({
+                    extractStyles: true
+                  });
+                  features = kml_format.read(kml_str);
+                  stroke_color = getRandomColor();
+                  _.each(features, function(feature) {
+                    feature.geometry.transform(gcs,merc);
+                    if ($.isEmptyObject(feature.style)) {
+                      feature.style = {
+                        pointRadius: 5,
+                        graphicName: "circle",
+                        strokeWidth: 3,
+                        strokeOpacity: 1,
+                        fillOpacity: 0,
+                        strokeOpacity: 1,
+                        fillColor: "#6666aa",
+                        strokeColor: stroke_color
+                      }  
+                    }
+                    _.each(_.keys(feature.data), function(key) {
+                      feature.data[key] = feature.data[key]['value'];
+
+                    })
+                    if (feature.data.implement_date != '' && 
+                        feature.data.implement_date != null && 
+                        feature.data.implement_date != undefined) {
+                      feature.data.implement_date = new Date(feature.data.implement_date);
+                    }
+                    feature.data.type='upload-kml'
+                    feature.attributes = feature.data;
+                  });
+                  vectorLayer.addFeatures(features);
+                  map.zoomToExtent(vectorLayer.getDataExtent());
+
+
+                });
+              }
+            });
           });
-          vectorLayer.addFeatures(features);
-          map.zoomToExtent(vectorLayer.getDataExtent());
+
         }
-        reader.readAsText(file);
+
       }
     }
   },{

@@ -15,3 +15,4 @@
 //= require jquery.marquee.min
 //= require underscore-min
 //= require polyline
+//= require jszip.min
