@@ -5,7 +5,7 @@ default: &default
   database: dsi
   username: admin
   password: 
-  host: localhost
+  host: 10.59.200.73
   port: 5432
 
 development:
