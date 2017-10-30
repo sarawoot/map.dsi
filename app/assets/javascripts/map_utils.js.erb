@@ -1353,23 +1353,13 @@ var gps_report = function(lon,lat) {
       return false;
     }
     ,success: function(response, opts){
-      // var data = eval( '(' + response.responseText + ')' );
-      // No response from IE
       var data = Ext.decode(response.responseText);
       var lon = parseFloat(data.lon);
       var lat = parseFloat(data.lat);
-      var msg = data.msg;
-      gps_msg += msg;
-
+      var gps_msg = data.msg;
       var p1 = new OpenLayers.LonLat(lon,lat);
       var p2 = p1.transform(gcs,merc);
       map.setCenter(p2, 14);
-
-      // var size = new OpenLayers.Size(48,48);
-      // var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-      // var icon = new OpenLayers.Icon(asset_prefix+'/icon_marker.png', size, offset);
-      // markers.addMarker(new OpenLayers.Marker(p2,icon));
-
       var point = new OpenLayers.Geometry.Point(lon, lat);
       point.transform(gcs,merc)
       var pointFeature = new OpenLayers.Feature.Vector(point,null,null);

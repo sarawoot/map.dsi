@@ -64,14 +64,14 @@ Ext.application({
       ]
     });
 
-    map.events.register("click", map, function(e){
-      var lonlat = map.getLonLatFromViewPortPx(e.xy).transform(merc, gcs);
-      var activelayers = map.getLayersBy("visibility", true);
-      for(i=0;i<activelayers.length;i++) {
-        if (activelayers[i].name.search('เขต') != -1 || activelayers[i].name.search('ชายเลน') != -1)
-        check_forest_info(activelayers[i].name, lonlat);
-      }
-    });
+    // map.events.register("click", map, function(e){
+    //   var lonlat = map.getLonLatFromViewPortPx(e.xy).transform(merc, gcs);
+    //   var activelayers = map.getLayersBy("visibility", true);
+    //   for(i=0;i<activelayers.length;i++) {
+    //     if (activelayers[i].name.search('เขต') != -1 || activelayers[i].name.search('ชายเลน') != -1)
+    //     check_forest_info(activelayers[i].name, lonlat);
+    //   }
+    // });
 
     map.events.register('changelayer', null, function(evt){
       if (evt.layer.name == 'Google Earth') {
@@ -126,33 +126,6 @@ Ext.application({
         } else {
           alert("Browser ไม่สนับสนุนฟังก์ชั่นนี้");
         }
-        // Ext.Ajax.request({
-        //   url: Routes.get_lonlat_from_ip_path()
-        //   ,params: {
-        //     method: 'GET'
-        //     ,format: 'json'
-        //   }
-        //   ,failure: function(response, opts){
-        //     alert("get_lonlat_from_ip.rb > failure");
-        //     return false;
-        //   }
-        //   ,success: function(response, opts){
-        //     // var data = eval( '(' + response.responseText + ')' );
-        //     // No response from IE
-        //     var data = Ext.decode(response.responseText);
-        //     var lon = parseFloat(data.lon);
-        //     var lat = parseFloat(data.lat);
-
-        //     var p1 = new OpenLayers.LonLat(lon,lat);
-        //     p2 = p1.transform(gcs,merc);
-        //     map.setCenter(p2, 8);
-
-        //     var size = new OpenLayers.Size(48,48);
-        //     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-        //     var icon = new OpenLayers.Icon(asset_prefix+'/my_locationx.png', size, offset);
-        //     markers.addMarker(new OpenLayers.Marker(p2,icon));
-        //   }
-        // });
       },
       allowDepress: false
     });
@@ -375,18 +348,7 @@ Ext.application({
       pt.transform(merc, gcs);
       lon = pt.lon;
       lat = pt.lat;
-      // var img_url = 'http://maps.googleapis.com/maps/api/streetview?size=400x400&location=' + lat + ',' + lon;
-      // img_url += '&sensor=false&key=AIzaSyBa-Aed1-QisFrEs2Vnc0f3hfu_fWgXIl4';
       window.open('http://maps.google.com/maps?q=&layer=c&cbll=' + lat + ',' + lon + '&cbp=12,0,0,0,0&output=svembed', '_blank');
-      // var html = "<center><img src='" + img_url + "' /></center>";
-      // Ext.create("Ext.window.Window", {
-      //   title: "<a href='http://maps.google.com/maps?q=&layer=c&cbll=" + lat + "," + lon + "&cbp=12,0,0,0,0&output=svembed' target='_blank'>Google Street View</a> <font color='red'><b>ท่านสามารถใช้เม้าส์คลิกที่ link ด้านซ้ายมือได้</b></font>",
-      //   width: 450,
-      //   height: 450,
-      //   layout: 'fit',
-      //   closable: true,
-      //   html: html
-      // }).show();
     }
 
     // Add Google Street View Control
@@ -892,7 +854,6 @@ Ext.application({
     button = Ext.create('Ext.Button',{
       tooltip: 'ค้นหาเส้นทาง',
       iconCls: 'direction',
-      enableToggle: true,
       handler: function() {
         showWinDirection(map, vectorLayer);
       }
@@ -1130,45 +1091,6 @@ Ext.application({
             }
           })
         }),
-
-        // new OpenLayers.Layer.WMS(
-        //   "ป่าชายเลน ปี 2552",
-        //   "http://10.59.200.73/cgi-bin/mapserv",
-        //   {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2552', transparent: true},
-        //   {isBaseLayer: false,visibility: false}
-        // ),
-        // remove 2543 and 2530 by drtoon @ 20161109
-        // new OpenLayers.Layer.WMS(
-        //   "ป่าชายเลน ปี 2543",
-        //   "http://10.59.200.73/cgi-bin/mapserv",
-        //   {map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2543', transparent: true},
-        //   {isBaseLayer: false,visibility: false}
-        // ),
-        ////new OpenLayers.Layer.WMS(
-          ////"ป่าชายเลน ปี 2530",
-          ////"http://10.59.200.73/cgi-bin/mapserv",
-          ////{map: '/ms603/map/wms-dsi.map', layers: 'mangrove_2530', transparent: true},
-          ////{isBaseLayer: false,visibility: false}
-        ////),
-        // new OpenLayers.Layer.WMS(
-        //   "เขตป่าสงวน",
-        //   "http://10.59.200.73/cgi-bin/mapserv",
-        //   {map: '/ms603/map/wms-dsi.map', layers: 'rforest', transparent: true},
-        //   {isBaseLayer: false,visibility: false, iconCls: 'rforest'}
-        // ),
-        // new OpenLayers.Layer.WMS(
-        //   "เขตอุทยานแห่งชาติ",
-        //   "http://10.59.200.73/cgi-bin/mapserv",
-        //   {map: '/ms603/map/wms-dsi.map', layers: 'npark', transparent: true},
-        //   {isBaseLayer: false,visibility: false, iconCls: 'npark'}
-        // ),
-        // new OpenLayers.Layer.WMS(
-        //   "พื้นที่สปก.",
-        //   "http://10.59.200.73/cgi-bin/mapserv",
-        //   {map: '/ms603/map/wms-dsi.map', layers: 'no_22_spk', transparent: true},
-        //   {isBaseLayer: false,visibility: false}
-        // ),
-
         new OpenLayers.Layer.WMS(
           "ชั้นความสูง",
           "http://10.59.200.73/cgi-bin/mapserv",
@@ -1271,8 +1193,6 @@ Ext.application({
           {map: '/ms603/map/wms-dsi.map', layers: 'no_02_province', transparent: true},
           {isBaseLayer: false,visibility: false, iconCls: 'changwat'}
         ),
-        // bing_road, bing_hybrid, bing_aerial,
-
         new OpenLayers.Layer.Google(
           "Google Hybrid",
           {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20,sphericalMercator: true, iconCls: 'google' }
@@ -1281,28 +1201,10 @@ Ext.application({
           "Google Physical",
           {type: google.maps.MapTypeId.TERRAIN,sphericalMercator: true, iconCls: 'google' }
         ),
-
         utmgrid,
-
-       /*
-        new OpenLayers.Layer.Yahoo(
-          "Yahoo Street",
-          {sphericalMercator: true}
-        ),
-        new OpenLayers.Layer.Yahoo(
-          "Yahoo Satellite",
-          {'type': YAHOO_MAP_SAT, sphericalMercator: true}
-        ),
-        new OpenLayers.Layer.Yahoo(
-          "Yahoo Hybrid",
-          {'type': YAHOO_MAP_HYB, sphericalMercator: true}
-        ),
-        */
-
         hili,
         markers,
         vectorLayer
-
       ],
       dockedItems: [{
         xtype: 'toolbar',

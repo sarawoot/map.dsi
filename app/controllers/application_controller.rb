@@ -108,7 +108,7 @@ class ApplicationController < ActionController::Base
 
   def check_npark(lon,lat)
     con = PGconn.connect("localhost",5432,nil,nil,"dsi","admin")
-    sql = "select name_th from national_park where contains(the_geom,"
+    sql = "select fr_name from fr_np where contains(the_geom,"
     sql += "geometryfromtext('POINT(#{lon} #{lat})',4326))"
     res = con.exec(sql)
     con.close
@@ -116,7 +116,7 @@ class ApplicationController < ActionController::Base
     name = "NA"
     if (found == 1)
       res.each do |rec|
-        name = rec['name_th']
+        name = rec['fr_name']
       end
     end
     name
@@ -124,7 +124,7 @@ class ApplicationController < ActionController::Base
 
   def check_rforest(lon,lat)
     con = PGconn.connect("localhost",5432,nil,nil,"dsi","admin")
-    sql = "select name_th from reserve_forest where contains(the_geom,"
+    sql = "select fr_name from fr_nrf where contains(the_geom,"
     sql += "geometryfromtext('POINT(#{lon} #{lat})',4326))"
     res = con.exec(sql)
     con.close
@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base
     name = "NA"
     if (found == 1)
       res.each do |rec|
-        name = rec['name_th']
+        name = rec['fr_name']
       end
     end
     name
