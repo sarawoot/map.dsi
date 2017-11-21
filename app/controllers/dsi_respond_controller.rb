@@ -138,7 +138,7 @@ class DsiRespondController < ApplicationController
       msg += "<br><b><font color=\"red\">อยู่ในเขตป่าสงวน#{rforest}</font></b>"
     end
 
-    data = "{'msg':'#{msg}','lon':'#{lon}','lat':'#{lat}'}"
+    data = "{'msg':'#{msg}'}"
 
     render text: data    
   end

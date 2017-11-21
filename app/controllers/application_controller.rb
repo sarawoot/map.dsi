@@ -140,7 +140,7 @@ class ApplicationController < ActionController::Base
 
   def check_npark_wkt(wkt)
     con = PGconn.connect("localhost",5432,nil,nil,"dsi","admin")
-    sql = "select fr_name from fr_np where contains(the_geom,"
+    sql = "select fr_name from fr_np where st_intersects(the_geom,"
     sql += "geometryfromtext('#{wkt}',4326))"
     res = con.exec(sql)
     con.close
@@ -156,7 +156,7 @@ class ApplicationController < ActionController::Base
 
   def check_rforest_wkt(wkt)
     con = PGconn.connect("localhost",5432,nil,nil,"dsi","admin")
-    sql = "select fr_name from fr_nrf where contains(the_geom,"
+    sql = "select fr_name from fr_nrf where st_intersects(the_geom,"
     sql += "geometryfromtext('#{wkt}',4326))"
     res = con.exec(sql)
     con.close
