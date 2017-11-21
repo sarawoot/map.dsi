@@ -124,23 +124,12 @@ class DsiRespondController < ApplicationController
     npark = check_npark_wkt(wkt)
     rforest = check_rforest_wkt(wkt)
 
-    msg = ""
+    data = {
+      npark: npark, # เขตอุทยานแห่งชาติ
+      rforest: rforest # เขตป่าสงวน
+    }
 
-    if (npark == "NA")
-      msg += "<br><b><font color=\"green\">ไม่อยู่ในเขตอุทยานแห่งชาติ</font></b>"
-    else
-      msg += "<br><b><font color=\"red\">อยู่ในเขตอุทยานแห่งชาติ#{npark}</font></b>"
-    end
-
-    if (rforest == "NA")
-      msg += "<br><b><font color=\"green\">ไม่อยู่ในเขตป่าสงวน</font></b>"
-    else
-      msg += "<br><b><font color=\"red\">อยู่ในเขตป่าสงวน#{rforest}</font></b>"
-    end
-
-    data = "{'msg':'#{msg}'}"
-
-    render text: data    
+    render json: data
   end
 
   def checkUTM

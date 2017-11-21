@@ -145,10 +145,10 @@ class ApplicationController < ActionController::Base
     res = con.exec(sql)
     con.close
     found = res.num_tuples
-    name = "NA"
-    if (found == 1)
+    name = []
+    if (found > 0)
       res.each do |rec|
-        name = rec['fr_name']
+        name << rec['fr_name']
       end
     end
     name
@@ -161,10 +161,10 @@ class ApplicationController < ActionController::Base
     res = con.exec(sql)
     con.close
     found = res.num_tuples
-    name = "NA"
-    if (found == 1)
+    name = []
+    if (found > 0)
       res.each do |rec|
-        name = rec['fr_name']
+        name << rec['fr_name']
       end
     end
     name
