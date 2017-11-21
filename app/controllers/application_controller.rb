@@ -138,6 +138,38 @@ class ApplicationController < ActionController::Base
     name
   end
 
+  def check_npark_wkt(wkt)
+    con = PGconn.connect("localhost",5432,nil,nil,"dsi","admin")
+    sql = "select fr_name from fr_np where contains(the_geom,"
+    sql += "geometryfromtext('#{wkt}',4326))"
+    res = con.exec(sql)
+    con.close
+    found = res.num_tuples
+    name = "NA"
+    if (found == 1)
+      res.each do |rec|
+        name = rec['fr_name']
+      end
+    end
+    name
+  end
+
+  def check_rforest_wkt(wkt)
+    con = PGconn.connect("localhost",5432,nil,nil,"dsi","admin")
+    sql = "select fr_name from fr_nrf where contains(the_geom,"
+    sql += "geometryfromtext('#{wkt}',4326))"
+    res = con.exec(sql)
+    con.close
+    found = res.num_tuples
+    name = "NA"
+    if (found == 1)
+      res.each do |rec|
+        name = rec['fr_name']
+      end
+    end
+    name
+  end
+
   def convert_gcs(n,e,z)
     if z == '47'
       srid = 32647

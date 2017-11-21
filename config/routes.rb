@@ -42,6 +42,10 @@ Rails.application.routes.draw do
           to: 'dsi_respond#checkLonLatDD', 
           as: :checkLonLatDD,
           via: [:get, :post]
+  match 'checkLonLatWKT', 
+          to: 'dsi_respond#checkLonLatWKT', 
+          as: :checkLonLatWKT,
+          via: [:get, :post]
   match 'checkUTM', 
           to: 'dsi_respond#checkUTM', 
           as: :checkUTM,

@@ -118,6 +118,31 @@ class DsiRespondController < ApplicationController
     render text: data    
   end
 
+  def checkLonLatWKT
+    wkt = params[:wkt]
+
+    npark = check_npark_wkt(wkt)
+    rforest = check_rforest_wkt(wkt)
+
+    msg = ""
+
+    if (npark == "NA")
+      msg += "<br><b><font color=\"green\">ไม่อยู่ในเขตอุทยานแห่งชาติ</font></b>"
+    else
+      msg += "<br><b><font color=\"red\">อยู่ในเขตอุทยานแห่งชาติ#{npark}</font></b>"
+    end
+
+    if (rforest == "NA")
+      msg += "<br><b><font color=\"green\">ไม่อยู่ในเขตป่าสงวน</font></b>"
+    else
+      msg += "<br><b><font color=\"red\">อยู่ในเขตป่าสงวน#{rforest}</font></b>"
+    end
+
+    data = "{'msg':'#{msg}','lon':'#{lon}','lat':'#{lat}'}"
+
+    render text: data    
+  end
+
   def checkUTM
     utmn = params[:utmn]
     utme = params[:utme]
